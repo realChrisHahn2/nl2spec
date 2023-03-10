@@ -1,0 +1,16 @@
+Translate the following natural language sentences into an LTL formula and explain your translation step by step.
+Remember that X means "next", U means "until", G means "globally", F means "finally", which means GF means "infinitely often".
+The formula should only contain atomic propositions or operators |, &, ~, ->, <->, X, U, G, F.
+Natural language: The coffee machine is always ready when somebody is at the room.
+Given translations: None
+Explanation: "The coffee machine is ready" from the input translates to "c" and "always" translates to "G".
+"Somebody is at the room" from the input translates to "r".
+Explanation dictionary: {"The coffee machine is ready" : "c", "always" : "G", "somebody is at the room" : "r"}
+So the final LTL translation is G (r -> c).FINISH
+Natural language: Lights are only on if somebody is in the room.
+Given translations: None
+Explanation: "Lights are on" from the input translates to "l" and "somebody is in the room" translates to "r".
+"only if" from the input translates to an equivalence "<->".
+Additionally, there is an implicit meaning that this is always the case, which translates to "G".
+Explanation dictionary: {"Lights are on" : "l", "somebody is in the room" : "r", "only if" : "<->"}
+So the final LTL translation is G (l <-> r).FINISH
