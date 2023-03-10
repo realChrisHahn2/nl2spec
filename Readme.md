@@ -68,4 +68,12 @@ Additionally, the tool can be extended to more fine-tuned or other upcoming open
 
 # How to cite
 
-TBD
+```
+@article{nl2spec,
+  author    = {Matthias Cosler, Christopher Hahn, Daniel Mendoza, Frederik Schmitt, Caroline Trippel},
+  title     = {nl2spec: Interactively Translating Unstructured Natural Language to Temporal Logics with Large Language Models},
+  publisher = {arXiv},
+  year      = {2023},
+  url       = {https://arxiv.org/abs/2303.04864}
+}
+```
