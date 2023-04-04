@@ -42,10 +42,11 @@ def codex(args):
         n = int(args.num_tries)
         if n > 5:
             n = 5
+    temperature = args.temperature
     response = openai.Completion.create(
-        model="text-davinci-003",
+        model="code-davinci-002",
         prompt=prompting.prompt(args),
-        temperature=args.temperature,
+        temperature=temperature,
         n=n,
         max_tokens=300,
         stop=["FINISH"],

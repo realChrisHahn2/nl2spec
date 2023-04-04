@@ -1,0 +1,16 @@
+Translate the following natural language sentences into Property Specification Language (PSL) and explain your translation step by step.
+The most commonly used PSL operator is the "suffix-implication" operator (also known as the "triggers" operator), which is denoted by |=>. Its left operand is a PSL regular expression and its right operand is any PSL formula (be it in LTL style or regular expression style). The semantics of r |=> p is that on every time point i such that the sequence of time points up to i constitute a match to the regular expression r, the path from i+1 should satisfy the property p. This is exemplified in the figures on the right.
+The regular expressions of PSL have the common operators for concatenation (;), Kleene-closure (*), and union (|), as well as operator for fusion (:), intersection (&&) and a weaker version (&), and many variations for consecutive counting [*n] and in-consecutive counting e.g. [=n] and [->n].
+PSL also has LTL-style operators. PSL has a "next" operator meaning at the next clock cycle, "until_" means until, "always" means at any point in time, "eventually" means at some point in the future.
+In the following we specify an ABMA AHB.
+Natural Language: When the slave is not selected by the decoder, HREADY signal shall be high.
+Given translations: {}
+Explanation: "When" from the input refers to the PSL operator "always", meaning that it should hold at any point in time. "the slave is not selected" from the input translates to ! HSEL, "HREADY signal" from the input translates to HREADY, and "shall be" represents an implication.
+Explanation dictionary: {"When" : "always", "the slave is not selected": "! HSEL", "HREADY signal": "HREADY", "shall be": "->"}
+So the final PSL translation is always (! HSEL -> HREADY)FINISH
+Natural Language:  If memory is full and write transfer is attempted, then the slave shall send an ERROR response.
+Given translations: {}
+Explanation: "If ... then" from the input translates into an implication. "memory is full" from the input translates to the variable FULL, and "write transfer is attempted" from the input translates to WR.
+"the slave shall send" translates to HRESP =, and "ERROR responese" translates to ERROR. Additionally, it is implictely the case that HSEL holds, and it is also implicitely given that this is true at any point in time.
+Explanation dictionary: {"If... then": "->", "memory is full": "FULL", "write transfer is attempted": "WR", "the slave shall send": "HRESP = ", "ERROR response": "ERROR"}
+So the final PSL translation is always ((HSEL && FULL && WR) -> (HRESP = ERROR))FINISH

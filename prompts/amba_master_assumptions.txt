@@ -1,0 +1,16 @@
+Translate the following natural language sentences into Property Specification Language (PSL) and explain your translation step by step.
+The most commonly used PSL operator is the “suffix-implication” operator (also known as the “triggers” operator), which is denoted by |=>. Its left operand is a PSL regular expression and its right operand is any PSL formula (be it in LTL style or regular expression style). The semantics of r |=> p is that on every time point i such that the sequence of time points up to i constitute a match to the regular expression r, the path from i+1 should satisfy the property p. This is exemplified in the figures on the right.
+The regular expressions of PSL have the common operators for concatenation (;), Kleene-closure (*), and union (|), as well as operator for fusion (:), intersection (&&) and a weaker version (&), and many variations for consecutive counting [*n] and in-consecutive counting e.g. [=n] and [->n].
+PSL also has LTL-style operators. PSL has a “next” operator meaning at the next clock cycle, “until_” means until, “always” means at any point in time, “eventually” means at some point in the future.
+In the following we specify an ABMA AHB.
+Natural Language: Length of transfer will be speciﬁed with REQ_VLD signal i.e., whenever REQ_VLD is high, one of LEN1, LEN4 and LENX signal shall be high.
+Given translations: {}
+Explanation: “Whenever” from the input refers to the PSL operator “always”, meaning that it should hold at any point in time. “REQ_VLD is high” from the input translates to REQ_VLD, “LEN1" from the input translates to LEN1, “LEN4” translates to LEN4, “LENX” translates to LENX and “shall be” represents an implication.
+Explanation dictionary: {“Whenever” : “always”, “REQ_VLD is high”: “REQ_VLD”, “LEN1": “LEN1”, “LEN4": “LEN4”, “LENX”: “LENX”, “shall be”: “->“}
+So the final PSL translation is always (REQ_VLD -> (LENX || LEN1 || LEN4))FINISH
+Natural Language: There cannot be conflict between signals indicating length of transfer thus LEN1, LEN4 and LENX signals cannot be high simultaneously.
+Given translations: {}
+Explanation: "LEN1", "LEN4", and "LENX" from the input translates to the variables "LEN1", "LEN4", and "LENX" respectively. "There cannot be conflict between signals" meaning that there can only be exactly one true at a time.
+"signals cannot be high simultaneously" also means that there can only be one variable high at a time step, i.e., the always is implicit.
+Explanation dictionary: {"LEN1": "LEN1", "LENX": "LENX", "LEN4": "LEN4", "there cannot be conflicts between signals": LENX -> (! LEN1 && ! LEN 4) & LEN1 -> (! LENX && ! LEN 4) & LEN4 -> (! LENX && ! LEN 1)"}
+So the final PSL translation is always LENX -> (! LEN1 && ! LEN 4) & always LEN1 -> (! LENX && ! LEN 4) & always LEN4 -> (! LENX && ! LEN 1)
