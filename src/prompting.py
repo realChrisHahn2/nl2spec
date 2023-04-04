@@ -54,6 +54,12 @@ def prompt(args):
     elif args.prompt == "indistribution":
         fixed_prompt_file = open(prompt_dir + "indistribution.txt")
         fixed_prompt = fixed_prompt_file.read()
+    elif args.prompt == "amba_master":
+        fixed_prompt_file = open(prompt_dir + "amba_master_assumptions.txt")
+        fixed_prompt = fixed_prompt_file.read()
+    elif args.prompt == "amba_slave":
+        fixed_prompt_file = open(prompt_dir + "amba_slave_guarantees.txt")
+        fixed_prompt = fixed_prompt_file.read()
     else:
         fixed_prompt = args.prompt
     final_prompt = (

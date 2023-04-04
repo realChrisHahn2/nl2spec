@@ -5,6 +5,31 @@ from statistics import mode
 import requests
 import prompting
 
+def gpt35(args):
+    key = open(args.keyfile).readline()
+    if key == "":
+        raise Exception("No key provided.")
+    openai.api_key = key
+    if args.num_tries == "":
+        n = 3
+    else:
+        n = int(args.num_tries)
+        if n > 5:
+            n = 5
+    response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages = [{"role":"user", "content": prompting.prompt(args)}],
+    n = n,
+    temperature = args.temperature,
+    stop="FINISH"
+    )
+    choices = []
+    for i in range(0, n):
+        output = response["choices"][i]["message"]["content"]
+        print("OUTPUT")
+        print(output)
+        choices.append(output)
+    return prompting.extract_subinfo(choices, args, n)
 
 def codex(args):
     key = open(args.keyfile).readline()
@@ -17,11 +42,10 @@ def codex(args):
         n = int(args.num_tries)
         if n > 5:
             n = 5
-    temperature = args.temperature
     response = openai.Completion.create(
-        model="code-davinci-002",
+        model="text-davinci-003",
         prompt=prompting.prompt(args),
-        temperature=temperature,
+        temperature=args.temperature,
         n=n,
         max_tokens=300,
         stop=["FINISH"],

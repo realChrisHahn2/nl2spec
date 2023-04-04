@@ -20,6 +20,8 @@ def home():
         keyfile=""
         if form_data["models"] == "codex":
             keyfile="../keys/oai_key.txt"
+        if form_data["models"] == "gpt35":
+            keyfile="../keys/oai_key.txt"
         if form_data["models"] == "bloom":
             keyfile="../keys/hf_key.txt"
         ns = Namespace(
@@ -53,7 +55,7 @@ def home():
     return render_template(
         "home.html",
         num_tries=3,
-        models="codex",
+        models="gpt35",
         prompts="minimal",
         temperature=2,
         input="Globally a and b until c.",
