@@ -18,9 +18,7 @@ def home():
         num_tries = int(form_data["num_tries"])
         temperature = float(form_data["temperature"]) * 0.1
         keyfile=""
-        if form_data["models"] == "codex":
-            keyfile="../keys/oai_key.txt"
-        if form_data["models"] == "gpt35":
+        if form_data["models"] == "code-davinci-002" or form_data["models"] == "text-davinci-003" or form_data["models"] == "gpt-3.5-turbo" or form_data["models"] == "code-davinci-edit-001":
             keyfile="../keys/oai_key.txt"
         if form_data["models"] == "bloom":
             keyfile="../keys/hf_key.txt"
@@ -55,7 +53,7 @@ def home():
     return render_template(
         "home.html",
         num_tries=3,
-        models="gpt35",
+        models="gpt-3.5-turbo",
         prompts="minimal",
         temperature=2,
         input="Globally a and b until c.",

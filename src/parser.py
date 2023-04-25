@@ -6,7 +6,7 @@ def parse_args():
                         description = 'Translates natural language to LTL formulas',
                         epilog = 'Beta. If encountering problems, please contact hahn@cs.stanford.edu')
 
-    parser.add_argument('--model', required=False, default="codex", help='chose the deep learning model')
+    parser.add_argument('--model', required=False, default="gpt-3.5-turbo", help='chose the deep learning model')
     parser.add_argument('--nl', required=True, default="", help='input sentence') 
     parser.add_argument('--fewshots', required=False, default="",  help='provide few shot examples')
     parser.add_argument('--keyfile', required=False, default="", help='provide open ai key (for codex usage), or a huggingface api key (for bloom usage)')
