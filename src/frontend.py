@@ -1,6 +1,9 @@
 from argparse import Namespace
 from flask import Flask, render_template, request, url_for
 import backend
+import pandas as pd
+import os
+import json
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 
@@ -17,11 +20,16 @@ def home():
         input = form_data["nl"]
         num_tries = int(form_data["num_tries"])
         temperature = float(form_data["temperature"]) * 0.1
-        keyfile=""
-        if form_data["models"] == "code-davinci-002" or form_data["models"] == "text-davinci-003" or form_data["models"] == "gpt-3.5-turbo" or form_data["models"] == "code-davinci-edit-001":
-            keyfile="../keys/oai_key.txt"
+        keyfile = ""
+        if (
+            form_data["models"] == "code-davinci-002"
+            or form_data["models"] == "text-davinci-003"
+            or form_data["models"] == "gpt-3.5-turbo"
+            or form_data["models"] == "code-davinci-edit-001"
+        ):
+            keyfile = os.path.join("..", "keys", "oai_key.txt")
         if form_data["models"] == "bloom":
-            keyfile="../keys/hf_key.txt"
+            keyfile = os.path.join("..", "keys", "hf_key.txt")
         ns = Namespace(
             keyfile=keyfile,
             maxtokens=128,
@@ -39,6 +47,7 @@ def home():
         subtranslations = res[1]
         return render_template(
             "home.html",
+            examples=load_examples(),
             final_output=final_formula,
             certainty=str(round(certainty * 100, 2)) + "%",
             input=input,
@@ -52,12 +61,17 @@ def home():
         )
     return render_template(
         "home.html",
+        examples=load_examples(),
         num_tries=3,
         models="gpt-3.5-turbo",
         prompts="minimal",
         temperature=2,
         input="Globally a and b until c.",
     )
+
+
+def load_examples():
+    return json.dumps(pd.read_csv(os.path.join("..", "examples.csv"), delimiter=";").values.tolist())
 
 
 def subtranslation_gen(form_data):
