@@ -1,12 +1,33 @@
 {% extends "layout.html"%}
 {% block content %}
+<!-- Modal -->
+<div class="modal fade" id="examples" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Examples</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <form method="POST">
     <div class="row g-3" id="form">
-        <h3>Prompt</h3>
+        <div class="col-md-12">
+            <h2 style="float: left;">Prompt</h2>
+            <button style="float: right; margin-left: 10px;"" data-bs-toggle="modal" data-bs-target="#examples"
+                class="btn btn-secondary" type="button" title="Show examples"><i class="bi bi-folder-fill"></i>
+                Examples</button>
+        </div>
         <div class="col-md-12">
             <div class="form-floating">
-                <textarea class="form-control" id="nl" placeholder=""
-                    name="nl">{{ input }}</textarea>
+                <textarea class="form-control" id="nl" placeholder="" name="nl"
+                    onchange="removeGroundTruth()">{{ input }}</textarea>
                 <label for="nl">Translate this sentence to LTL:</label>
             </div>
         </div>
@@ -43,53 +64,61 @@
         <div class="col-md-3">
             <div class="input-group">
                 <span class="input-group-text" id="num_tries_label">Number of tries:</span>
-                <input type="number" id="num_tries" class="form-control" name="num_tries" aria-describedby="num_tries_label" value="{{ num_tries }}" max="5"/>
+                <input type="number" id="num_tries" class="form-control" name="num_tries"
+                    aria-describedby="num_tries_label" value="{{ num_tries }}" max="5" />
             </div>
         </div>
         <div class="col-md-3">
             <div class="field-group"><label class="field-label" style="padding-right: 1em;">Temperature:</label>
                 <span id="temp_value"></span>
-                <input type="range" class="form-range" step="0.1" value="2" min="0" max="10" id="temperature" name="temperature" oninput="setLabel(this)">
+                <input type="range" class="form-range" step="0.1" value="2" min="0" max="10" id="temperature"
+                    name="temperature" oninput="setLabel(this)">
             </div>
         </div>
         <div class="col-md-12">
             <h3 style="float: left;">Subtranslations</h3>
-            <button style="float: right; margin-left: 10px;"" class="btn btn-outline-danger" type="button" title="Delete all subtranslations" onclick="deleteSubtAll()"><i
-                    class="bi bi-trash3"></i> Delete All</button>
-            <button style="float: right; margin-left: 10px;"" class="btn btn-outline-primary" type="button"
+            <button style="float: right; margin-left: 10px;"" class=" btn btn-outline-danger" type="button"
+                title="Delete all subtranslations" onclick="deleteSubtAll()"><i class="bi bi-trash3"></i> Delete
+                All</button>
+            <button style="float: right; margin-left: 10px;"" class=" btn btn-outline-primary" type="button"
                 title="Add subtranslation to refine prompt" onclick="createSubt('',[],[], false)"><i
                     class="bi bi-plus-square-fill"></i> Add Subtranslation</button>
         </div>
         <div class="row g-3" id="subtranslations">
-             <!-- Subtranslations will be populated in here --></div>
-        <div class="col-md-12"><h3 style="float: left;">Final Result</h3><input style="float: right;" class="btn-primary" type="submit" value="Translate to LTL" /></div>
+            <!-- Subtranslations will be populated in here -->
+        </div>
+        <div class="col-md-12">
+            <h2 style="float: left;">Final Result</h2><input style="float: right;" class="btn-primary" type="submit"
+                value="Translate to LTL" />
+        </div>
     </div>
 </form>
 
 
 <script type="text/javascript">
 
+
     const textAreaHeightObserver = new ResizeObserver(entries => {
-            entries.forEach(entry => {
-                Array.prototype.forEach.call(entry.target.parentNode.getElementsByTagName("textarea"), function (element) {
-                    if (element != entry) {
-                        element.style.height = entry.target.style.height
-                    }
-                });
+        entries.forEach(entry => {
+            Array.prototype.forEach.call(entry.target.parentNode.getElementsByTagName("textarea"), function (element) {
+                if (element != entry) {
+                    element.style.height = entry.target.style.height
+                }
             });
         });
+    });
 
     const alternativesWidthObserver = new ResizeObserver(entries => {
-            entries.forEach(entry => {
-                size = 0
-                Array.prototype.forEach.call(entry.target.getElementsByClassName("right-half"), function (element) {
-                    size = size + element.offsetWidth
-                });
-                Array.prototype.forEach.call(Array.prototype.slice.call(entry.target.parentNode.childNodes, 1), function (element) {
-                    element.style.width = size + "px"
-                });
+        entries.forEach(entry => {
+            size = 0
+            Array.prototype.forEach.call(entry.target.getElementsByClassName("right-half"), function (element) {
+                size = size + element.offsetWidth
+            });
+            Array.prototype.forEach.call(Array.prototype.slice.call(entry.target.parentNode.childNodes, 1), function (element) {
+                element.style.width = size + "px"
             });
         });
+    });
 
     document.getElementById("prompts").value = "{{prompts}}"
     document.getElementById("models").value = "{{models}}"
@@ -98,6 +127,24 @@
 
 
     var num_current_subtranslations = 0
+
+    fillExamples()
+
+    if ('{{ subtranslations }}' == "") {
+        var num_subtranslations = 0;
+    } else {
+        var subtranslations = JSON.parse(htmlDecode('{{ subtranslations }}').replaceAll("'", '"').replaceAll("True", "true").replaceAll("False", "false"));
+        var nl_subtranslations = subtranslations[0];
+        var ltl_subtranslations = subtranslations[1];
+        var certainty_subtranslations = subtranslations[2];
+        var locked_subtranslations = subtranslations[3];
+        var num_subtranslations = nl_subtranslations.length;
+    }
+
+    if ('{{ final_output }}' != "") {
+        createResult(htmlDecode('{{ final_output }}'), htmlDecode('{{ certainty }}'))
+        add_n_fields()
+    }
 
     function setLabel(elem) {
         document.getElementById("temp_value").textContent = (elem.value * 0.1).toFixed(2);
@@ -115,6 +162,54 @@
         }
     }
 
+    function setExample(elem) {
+        nl = elem.children[0].textContent
+        ltl = elem.children[1].textContent
+
+        removeGroundTruth()
+
+        elem.classList.add("active")
+
+        document.getElementById("nl").textContent = nl
+        addGroundTruth(ltl)
+
+    }
+
+    function addGroundTruth(ground_truth_text) {
+        div1 = document.createElement('div')
+        div1.classList.add("col-md-12")
+        h1 = document.createElement('h3')
+        h1.style.float = "left"
+        h1.textContent = "Ground Truth"
+        div1.appendChild(h1)
+
+        div2 = document.createElement('div')
+        div2.classList.add("col-md-12")
+        textarea1 = document.createElement('textarea')
+        textarea1.classList.add("form-control")
+        textarea1.readOnly = true
+        textarea1.id = "ground_truth"
+        textarea1.name = "ground_truth"
+        textarea1.textContent = ground_truth_text
+        div2.appendChild(textarea1)
+        insertAfter = document.getElementById("subtranslations")
+        insertAfter.parentNode.insertBefore(div1, insertAfter.nextSibling)
+        insertAfter.parentNode.insertBefore(div2, insertAfter.nextSibling.nextSibling)
+    }
+
+    function removeGroundTruth() {
+        elem = document.getElementById("examples").children[0].children[0].children[1].children[0]
+        for (var i = 0; i < elem.children.length; i++) {
+            var child = elem.children[i];
+            child.classList.remove("active")
+        }
+
+        if (document.getElementById("ground_truth") != null) {
+            document.getElementById("ground_truth").parentElement.previousElementSibling.remove()
+            document.getElementById("ground_truth").parentElement.remove()
+        }
+    }
+
     function switchTranslation(elem) {
         ltlAlternative = elem.parentNode.getElementsByTagName('textarea')[0]
         consensusAlternative = elem.parentNode.getElementsByTagName('span')[1]
@@ -122,8 +217,8 @@
         consensusMain = elem.parentNode.parentNode.parentNode.childNodes[0].getElementsByTagName('span')[2]
         ltlTextAlternative = ltlAlternative.textContent
         consensusTextAlternative = consensusAlternative.textContent
-        consensusAlternative.textContent =  consensusMain.textContent
-        ltlAlternative.textContent =  ltlMain.textContent
+        consensusAlternative.textContent = consensusMain.textContent
+        ltlAlternative.textContent = ltlMain.textContent
         consensusMain.textContent = consensusTextAlternative
         ltlMain.textContent = ltlTextAlternative
     }
@@ -197,7 +292,7 @@
         button1.classList.add('right-half')
         button1.id = "button_expand_example" + number
         button1.title = "Show Alternatives"
-        button1.onclick = function () {  expandSubt(this);}
+        button1.onclick = function () { expandSubt(this); }
         button1.innerHTML = '<i class="bi bi-arrow-down"></i>'
         if (consensus.length == 0) {
             button1.style.display = "none"
@@ -232,7 +327,7 @@
         button2.classList.add('right-half')
         button2.id = "button_delete_example" + number
         button2.title = "Delete Example"
-        button2.onclick = function () { deleteSubt(this);}
+        button2.onclick = function () { deleteSubt(this); }
         button2.innerHTML = '<i class="bi bi-trash3"></i>'
         div1 = document.createElement('div')
         div1.classList.add('input-group')
@@ -294,44 +389,57 @@
     }
 
     function createResult(ltl, consensus) {
-            span1 = document.createElement('span')
-            span1.classList.add('input-group-text')
-            span1.textContent = consensus
-            span1.title = "confidence score"
-            textarea1 = document.createElement('textarea')
-            textarea1.classList.add('form-control')
-            textarea1.id = "resultltl"
-            textarea1.name = "resultltl"
-            textarea1.textContent = ltl
-            textarea1.readOnly = true;
-            div1 = document.createElement('div')
-            div1.classList.add('input-group')
-            div1.appendChild(textarea1)
-            div1.appendChild(span1)
-            div2 = document.createElement('div')
-            div2.classList.add('col-md-12')
-            div2.appendChild(div1)
-            document.getElementById('form').appendChild(div2)
-        }
-    if ('{{ subtranslations }}' == "") {
-         var num_subtranslations = 0;
-    } else {
-        var subtranslations = JSON.parse(htmlDecode('{{ subtranslations }}').replaceAll("'", '"').replaceAll("True", "true").replaceAll("False", "false"));
-        var nl_subtranslations = subtranslations[0];
-        var ltl_subtranslations = subtranslations[1];
-        var certainty_subtranslations = subtranslations[2];
-        var locked_subtranslations = subtranslations[3];
-        var num_subtranslations = nl_subtranslations.length;
+        span1 = document.createElement('span')
+        span1.classList.add('input-group-text')
+        span1.textContent = consensus
+        span1.title = "confidence score"
+        textarea1 = document.createElement('textarea')
+        textarea1.classList.add('form-control')
+        textarea1.id = "resultltl"
+        textarea1.name = "resultltl"
+        textarea1.textContent = ltl
+        textarea1.readOnly = true;
+        div1 = document.createElement('div')
+        div1.classList.add('input-group')
+        div1.appendChild(textarea1)
+        div1.appendChild(span1)
+        div2 = document.createElement('div')
+        div2.classList.add('col-md-12')
+        div2.appendChild(div1)
+        document.getElementById('form').appendChild(div2)
     }
 
-    if ('{{ final_output }}' != "") {
-        createResult(htmlDecode('{{ final_output }}'), htmlDecode('{{ certainty }}'))
-        add_n_fields()
+    function fillExamples() {
+        var examples = JSON.parse(htmlDecode('{{ examples }}').replaceAll("'", '"'));
+        examples.forEach(addExample)
+    }
+
+    function addExample(row) {
+        nl = row[0]
+        ltl = row[1]
+        a1 = document.createElement("a")
+        a1.href = "#"
+        a1.classList.add("list-group-item")
+        a1.classList.add("list-group-item-action")
+        attr1 = document.createAttribute("data-bs-dismiss")
+        attr1.value = "modal";
+        a1.setAttributeNode(attr1);
+        a1.onclick = function () { setExample(this); }
+        p1 = document.createElement("p")
+        p1.classList.add("mb-1")
+        p1.textContent = nl
+        a1.appendChild(p1)
+        small1 = document.createElement("small")
+        small1.textContent = ltl
+        a1.appendChild(small1)
+
+        elem = document.getElementById("examples").children[0].children[0].children[1].children[0]
+        elem.appendChild(a1)
     }
 
 
-    function add_n_fields(){
-        for (let i = 0; i < num_subtranslations; i++){
+    function add_n_fields() {
+        for (let i = 0; i < num_subtranslations; i++) {
             createSubt(nl_subtranslations[i], ltl_subtranslations[i], certainty_subtranslations[i], locked_subtranslations[i] == "true")
         }
     }

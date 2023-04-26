@@ -1,3 +1,4 @@
+import os
 import ambiguity
 from ltlf2dfa.parser.ltlf import LTLfParser
 import ast
@@ -41,24 +42,24 @@ def generate_intermediate_output(intermediate_translation):
 
 def prompt(args):
     inpt = args.nl
-    prompt_dir = "../prompts/"
+    prompt_dir = os.path.join("..", "prompts")
     if args.prompt == "minimal":
-        fixed_prompt_file = open(prompt_dir + "minimal.txt")
+        fixed_prompt_file = open(os.path.join(prompt_dir, "minimal.txt"))
         fixed_prompt = fixed_prompt_file.read()
     elif args.prompt == "smart":
-        fixed_prompt_file = open(prompt_dir + "smart.txt")
+        fixed_prompt_file = open(os.path.join(prompt_dir, "smart.txt"))
         fixed_prompt = fixed_prompt_file.read()
     elif args.prompt == "stl":
-        fixed_prompt_file = open(prompt_dir + "stl.txt")
+        fixed_prompt_file = open(os.path.join(prompt_dir, "stl.txt"))
         fixed_prompt = fixed_prompt_file.read()
     elif args.prompt == "indistribution":
-        fixed_prompt_file = open(prompt_dir + "indistribution.txt")
+        fixed_prompt_file = open(os.path.join(prompt_dir, "indistribution.txt"))
         fixed_prompt = fixed_prompt_file.read()
     elif args.prompt == "amba_master":
-        fixed_prompt_file = open(prompt_dir + "amba_master_assumptions.txt")
+        fixed_prompt_file = open(os.path.join(prompt_dir, "amba_master_assumptions.txt"))
         fixed_prompt = fixed_prompt_file.read()
     elif args.prompt == "amba_slave":
-        fixed_prompt_file = open(prompt_dir + "amba_slave_guarantees.txt")
+        fixed_prompt_file = open(os.path.join(prompt_dir, "amba_slave_guarantees.txt"))
         fixed_prompt = fixed_prompt_file.read()
     else:
         fixed_prompt = args.prompt
