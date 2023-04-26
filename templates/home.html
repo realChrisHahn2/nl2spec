@@ -147,6 +147,10 @@
         add_n_fields()
     }
 
+    if ('{{ ground_truth }}' != "") {
+        addGroundTruth('{{ ground_truth }}')
+    }
+
     function setLabel(elem) {
         document.getElementById("temp_value").textContent = (elem.value * 0.1).toFixed(2);
     }
@@ -168,8 +172,6 @@
         ltl = elem.children[1].textContent
 
         removeGroundTruth()
-
-        elem.classList.add("active")
 
         document.getElementById("nl").textContent = nl
         addGroundTruth(ltl)
@@ -196,6 +198,14 @@
         insertAfter = document.getElementById("subtranslations")
         insertAfter.parentNode.insertBefore(div1, insertAfter.nextSibling)
         insertAfter.parentNode.insertBefore(div2, insertAfter.nextSibling.nextSibling)
+
+        elem = document.getElementById("examples").children[0].children[0].children[1].children[0]
+        for (var i = 0; i < elem.children.length; i++) {
+            var child = elem.children[i]
+            if (child.children[1].textContent == ground_truth_text) {
+                child.classList.add("active")
+            }
+        }
     }
 
     function removeGroundTruth() {

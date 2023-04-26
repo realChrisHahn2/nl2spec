@@ -20,6 +20,7 @@ def home():
         input = form_data["nl"]
         num_tries = int(form_data["num_tries"])
         temperature = float(form_data["temperature"]) * 0.1
+        ground_truth = form_data["ground_truth"] if "ground_truth" in form_data else ""
         keyfile = ""
         if (
             form_data["models"] == "code-davinci-002"
@@ -49,6 +50,7 @@ def home():
         return render_template(
             "home.html",
             examples=load_examples(),
+            ground_truth=ground_truth,
             final_output=final_formula,
             certainty=str(round(certainty * 100, 2)) + "%",
             input=input,
@@ -63,6 +65,7 @@ def home():
     return render_template(
         "home.html",
         examples=load_examples(),
+        ground_truth="",
         num_tries=3,
         models="gpt-3.5-turbo",
         prompts="minimal",
