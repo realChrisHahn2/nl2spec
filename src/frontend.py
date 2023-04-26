@@ -28,7 +28,8 @@ def home():
             or form_data["models"] == "code-davinci-edit-001"
         ):
             keyfile = os.path.join("..", "keys", "oai_key.txt")
-        if form_data["models"] == "bloom":
+        if (form_data["models"] == "bloom"
+            or form_data["models"] == "bloomz"):
             keyfile = os.path.join("..", "keys", "hf_key.txt")
         ns = Namespace(
             keyfile=keyfile,
