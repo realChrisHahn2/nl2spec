@@ -7,7 +7,7 @@ import prompting
 
 
 def gpt_35_turbo(args):
-    key = open(args.keyfile).readline()
+    key = open(args.keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     openai.api_key = key
@@ -34,7 +34,7 @@ def gpt_35_turbo(args):
 
 
 def code_davinci_002(args):
-    key = open(args.keyfile).readline()
+    key = open(args.keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     openai.api_key = key
@@ -63,7 +63,7 @@ def code_davinci_002(args):
 
 
 def text_davinci_003(args):
-    key = open(args.keyfile).readline()
+    key = open(args.keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     openai.api_key = key
@@ -92,7 +92,7 @@ def text_davinci_003(args):
 
 
 def code_davinci_edit_001(args):
-    key = open(args.keyfile).readline()
+    key = open(args.keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     openai.api_key = key
@@ -126,7 +126,7 @@ def bloom(args):
     n = args.num_tries
     input_prompt = prompting.prompt(args)
     API_URL = "https://api-inference.huggingface.co/models/bigscience/bloom"
-    key = open(args.keyfile).readline()
+    key = open(args.keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     headers = {"Authorization": "Bearer " + key}
