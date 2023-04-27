@@ -153,3 +153,39 @@ def bloom(args):
         output = raw_output[0]["generated_text"].split("FINISH")[0]
         choices.append(output)
     return prompting.extract_subinfo(choices, args, n)
+
+def bloomz(args):
+    n = args.num_tries
+    input_prompt = prompting.prompt(args)
+    API_URL = "https://api-inference.huggingface.co/models/bigscience/bloomz"
+    key = open(args.keyfile).readline()
+    if key == "":
+        raise Exception("No key provided.")
+    headers = {"Authorization": "Bearer " + key}
+
+    def query(payload):
+        response = requests.post(API_URL, headers=headers, json=payload)
+        print("RESPONSE")
+        print(response)
+        return response.json()
+
+    choices = []
+    for i in range(0, n):
+        raw_output = query(
+            {
+                "inputs": input_prompt,
+                "options": {"use_cache": False, "wait_for_model": True},
+                "parameters": {
+                    "return_full_text": False,
+                    "do_sample": False,
+                    "max_new_tokens": 300,
+                    "temperature": args.temperature,
+                },
+            }
+        )
+        print("RAW OUTPUT")
+        print(raw_output)
+        # shots_count = input_prompt.count("FINISH")
+        output = raw_output[0]["generated_text"].split("FINISH")[0]
+        choices.append(output)
+    return prompting.extract_subinfo(choices, args, n)

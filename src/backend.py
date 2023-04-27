@@ -18,4 +18,7 @@ def call(args):
     if model == "gpt-3.5-turbo":
         res = models.gpt_35_turbo(args)
         return res
+    if model == "bloomz":
+        res = models.bloomz(args)
+        return res
     raise Exception("Not a valid model.")
