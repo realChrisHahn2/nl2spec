@@ -6,10 +6,10 @@ Given translations: {}
 Explanation: "a holds" from the input translates to the atomic proposition a. "c is true until b" from the input translates to the subformula c U b.
 "if x then y" translates to an implication x -> y, so "if a holds then c is true until b" translates to an implication a -> c U b. "Globally" from the input translates to the temporal operator G.
 Explanation dictionary: {"a holds" : "a", "c is true until b" : "c U b", "if a holds then c is true until b" : "a -> c U b", "Globally" : "G"}
-So the final LTL translation is G (a -> (c U b)).FINISH
+FINAL: G (a -> (c U b)).FINISH
 Natural Language: Every request r is eventually followed by a grant g.
 Given translations: {}
 Explanation: "Request r" from the input translates to the atomic proposition r and "grant g" translates to the atomic proposition g.
 "every" means at every point in time, i.e., globally, "never" means at no point in time, and "eventually" translates to the temporal operator F. "followed by" is the natural language representation of an implication.
 Explanation dictionary: {"Request r" : "r", "grant g" : "g", "every" : "G", "eventually" : "F", "followed by" : "->"}
-So the final LTL translation is G (r -> F g).FINISH
+FINAL: G (r -> F g).FINISH

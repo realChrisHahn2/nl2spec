@@ -7,7 +7,7 @@ def parse_formulas(choices):
     parser = LTLfParser()
     parsed_result_formulas = []
     for c in choices:
-        formula_str = c.split("So the final LTL translation is")[1].strip(".")
+        formula_str = c.split("FINAL:")[1].strip(".")
         try:
             parsed_formula = parser(formula_str)
             parsed_result_formulas.append(parsed_formula)

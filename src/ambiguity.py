@@ -34,7 +34,11 @@ def fill_with_none(dict, n):
 
 
 def most_freq(l):
-    return mode(l)
+    try:
+        res = mode(l)
+    except:
+        res = l[0]
+    return res
 
 
 def count_occurences(l, el):
