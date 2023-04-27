@@ -1,0 +1,37 @@
+NL,LTL,Codex initial,Bloom initial,Codex wrong,Bloom wrong,num adds,num edits,not solved interactively,ambiguity,teacher-learner
+Every a is eventually followed by a e.,G(a -> F e),SOLVED,SOLVED,,,,,,YES,
+It is never the case that a and b hold at the same time.,G(!(a & b)),SOLVED,NOT SOLVED,,!((a & b)),,,,,SOLVED
+"Whenever a is enabled, b is enabled three steps later.",G(a -> X (X (X b))),SOLVED,NOT SOLVED,,G (a -> (b U 3)),,,,,SOLVED
+"e must hold everywhere until from some point on, d holds infinitely often.",e U (G (F d)),SOLVED,NOT SOLVED,,(G((e U e)) -> (e U d U G(F(d)))),,,,,NOT SOLVED
+"If b holds at some point, a has to hold somewhere beforehand.",(F b) -> (!b U (a & !b)),NOT SOLVED,NOT SOLVED,(b -> F(a)),((b -> X(b)) U a),1,2,,,
+"Whenever a holds, b holds as well.",G(a -> b),NOT SOLVED,NOT SOLVED,(a U b),(a -> b),0,1,,,
+Both a and b hold in every time step.,G (a && b),SOLVED,SOLVED,,,,,,,
+"a holds always and whenever b holds, c does not hold.",G a && G(b -> !c),SOLVED,NOT SOLVED,,,,,,,NOT SOLVED
+"If it is the case that every a is eventually followed by a b, then c needs to holds infinitely often.",G(a -> F b) -> G F c,SOLVED,NOT SOLVED,,((a -> F(b)) -> c -> G(F(c))),,,,,SOLVED
+"If a holds infinitely often, then b holds infinitely often as well.",G F a -> G F b,SOLVED,NOT SOLVED,,G((a -> G(F(b)))),,,,,NOT SOLVED
+Either a or b holds infinitely often,G F a || G F b,SOLVED,SOLVED,,,,,,,
+a never holds from some point in time on.,F G ! a,NOT SOLVED,NOT SOLVED,G(!(a)),-> (~a),1,2,,,
+"Whenever a and b do not hold, c holds eventually.",G (!(a && b) -> F c),NOT SOLVED,NOT SOLVED,(!((a & b)) -> F(c)),F(!((a & b))),0,2,,,
+a and b never occur at the same time but one of them holds in every time step.,G(!(a &&b)) && G(a || b),NOT SOLVED,NOT SOLVED,(!((a & b)) -> G((a | b))),(G((a & !(b))) U a),0,2,,,
+"Whenever the inputs a and b are the same, the outputs c and d are the same.",G ((a <-> b) -> (c <-> d)),SOLVED,NOT SOLVED,,-> (a & b) -> (c & d),,,,,NOT SOLVED
+a can only happen if b happend before,(! a) U b,NOT SOLVED,NOT SOLVED,((b U false) -> a),(a -> X(b)),0,3,,,
+"Once a happened, b will not happen again.",G (a -> X G ! b),NOT SOLVED,NOT SOLVED,,(X(a) & !(b)),,,X,,
+a releases b,(b U (b & ! a)) | G b,NOT SOLVED,NOT SOLVED,(a & b),(a -> X(b)),,,X,,
+a and b will not occur at the same time,G !(a & b),NOT SOLVED,NOT SOLVED,!((a & b)),!((a & b)),0,1,,YES,
+"Whenever a holds and b holds in the next step, then c holds one step after b.",G (a && X b -> X X c),NOT SOLVED,NOT SOLVED,(a & b X) -> (c X b),G(((a & b) -> X(c))),0,3,,,
+"Whenever a holds, b holds eventually from the next step on.",G (a -> X F b),SOLVED,NOT SOLVED,,G((a -> (b U X(b)))),,,,YES,NOT SOLVED
+a holds in every fifth step.,a && G (a -> X ! a && X X ! a && X X X ! a && X X X X ! a && X X X X X a),NOT SOLVED,NOT SOLVED,G(X(X(X(X(a))))),F(a),,,X,,
+Either a holds infinitely often or b holds in the next step.,G F a || X b,SOLVED,NOT SOLVED,,((a | b) & G(F((a | b)))),,,,,NOT SOLVED
+a will hold at all instances.,G (a),SOLVED,SOLVED,,,,,,,
+"Whenever a holds, b must hold in the next two steps",G (a -> (b | X b)),NOT SOLVED,NOT SOLVED,(a -> X(X(b))),G((a -> (b U (X(b) U X(b))))),1,1,,YES,
+"One of the following aps will hold at all instances: a,b,c",G (a | b | c),SOLVED,NOT SOLVED,,(a | b | c),,,,,SOLVED
+If a holds b will eventually hold,G (a -> F b),NOT SOLVED,NOT SOLVED,(a -> F(b)),G((a -> (b U F(b)))),0,1,,YES,
+"a must always hold, but if is execeeds, it allow two timestamps to recover.",! G (! (a && X a)),NOT SOLVED,ERROR,(G(a) & e & F((t1 & t2))),,,,X,YES,
+not a holds at most two timestamps,! G (! (a && X a)),NOT SOLVED,NOT SOLVED,!((a & !(X(X(a))))),~a.F,,,X,YES,
+a can only hold every three timestamps,G ( a -> (X !a | XX !a | XXX !a)),NOT SOLVED,NOT SOLVED,(a U a U a),-> (a -> 3),0,3,,,
+Every a is followed by a b.,G ( a -> X b),NOT SOLVED,NOT SOLVED,G((a -> F(b))),G((a -> F(b))),0,2,,YES,
+Eventually a and b hold.,F (a && b),SOLVED,SOLVED,,,,,,YES,
+Both a and b hold eventually.,F a && F b,NOT SOLVED,NOT SOLVED,F((a & b)),F((a & b)),0,2,,YES,
+It is always the case that a is the same as b in the next step.,G (a <-> X b),NOT SOLVED,NOT SOLVED,G((a <-> b)),G((a -> b)),0,1,,,
+"If b holds then, in the next step, c holds until a holds or always c holds",b -> X ((c U a) || G c),SOLVED,NOT SOLVED,,X((b -> (c U (a U c)))),,,,YES,NOT SOLVED
+a holds until b holds or always a holds,(a U b) || G a,NOT SOLVED,NOT SOLVED,(a U (b | G(a))),(a U (b | a)),0,2,,YES,
