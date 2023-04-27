@@ -7,8 +7,8 @@ Explanation: "The signal" from the input translates to the variable "x[t]", "abo
 from the input translates to "> 3.5", "never above 3.5" thus means that the signal
 should never be above 3.5, i.e., always under 3.5. Explanation dictionary:
 {"The signal": "x[t]", "above 3.5": "> 3.5", "never above 3.5": "G < 3.5"}
-So the final STL translation is G (x[t] < 3.5).
+FINAL: G (x[t] < 3.5).
 Natural Langauge: Between 2s and 6s the signal is between -2 and 2. Given translations: {} Explanation: "Between 2s and 6s" from the input translates to the
 temporal operator "G[2,6]" and "the signal is between -2 and 2" translates to the predicate "|x[t]| < 2". Explanation dictionary: {"Between 2s and 6s": "G[2,6]",
 "the signal is between -2 and 2": "|x[t]| < 2"}.
-So the final STL translation is G[2,6] (|x[t]| < 2).
+FINAL: G[2,6] (|x[t]| < 2).

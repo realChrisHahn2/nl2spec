@@ -4,10 +4,15 @@ import requests
 from statistics import mode
 import requests
 import prompting
+import os
 
 
 def gpt_35_turbo(args):
-    key = open(args.keyfile).readline().strip("\n")
+    if args.keyfile != "":
+        keyfile = args.keyfile
+    else:
+        keyfile = os.path.join(args.keydir,"oai_key.txt")
+    key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     openai.api_key = key
@@ -34,7 +39,11 @@ def gpt_35_turbo(args):
 
 
 def code_davinci_002(args):
-    key = open(args.keyfile).readline().strip("\n")
+    if args.keyfile != "":
+        keyfile = args.keyfile
+    else:
+        keyfile = os.path.join(args.keydir,"oai_key.txt")
+    key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     openai.api_key = key
@@ -63,7 +72,11 @@ def code_davinci_002(args):
 
 
 def text_davinci_003(args):
-    key = open(args.keyfile).readline().strip("\n")
+    if args.keyfile != "":
+        keyfile = args.keyfile
+    else:
+        keyfile = os.path.join(args.keydir,"oai_key.txt")
+    key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     openai.api_key = key
@@ -92,7 +105,11 @@ def text_davinci_003(args):
 
 
 def code_davinci_edit_001(args):
-    key = open(args.keyfile).readline().strip("\n")
+    if args.keyfile != "":
+        keyfile = args.keyfile
+    else:
+        keyfile = os.path.join(args.keydir,"oai_key.txt")
+    key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     openai.api_key = key
@@ -126,7 +143,11 @@ def bloom(args):
     n = args.num_tries
     input_prompt = prompting.prompt(args)
     API_URL = "https://api-inference.huggingface.co/models/bigscience/bloom"
-    key = open(args.keyfile).readline().strip("\n")
+    if args.keyfile != "":
+        keyfile = args.keyfile
+    else:
+        keyfile = os.path.join(args.keydir,"hf_key.txt")
+    key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     headers = {"Authorization": "Bearer " + key}
@@ -158,15 +179,17 @@ def bloomz(args):
     n = args.num_tries
     input_prompt = prompting.prompt(args)
     API_URL = "https://api-inference.huggingface.co/models/bigscience/bloomz"
-    key = open(args.keyfile).readline()
+    if args.keyfile != "":
+        keyfile = args.keyfile
+    else:
+        keyfile = os.path.join(args.keydir,"hf_key.txt")
+    key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
     headers = {"Authorization": "Bearer " + key}
 
     def query(payload):
         response = requests.post(API_URL, headers=headers, json=payload)
-        print("RESPONSE")
-        print(response)
         return response.json()
 
     choices = []
