@@ -7,23 +7,23 @@ Explanation: "Every" from the input sentence refers to the temporal operator "G"
 "eventually" from the input sentence translates to the temporal operator "F". "a followed by a e" means that after "a" holds, "e" has to hold as well, i.e., translating to an implication.
 Thus, "a eventually followed by a e" translates to "a -> F e".
 Explanation dictionary: {"Every": "G", "eventually": "F", "a": "a", "e": "e", "a followed by a e": "a -> e", "a eventually followed by a e": "a -> F e"}
-So the final LTL translation is G (a -> F e).FINISH
+FINAL: G (a -> F e).FINISH
 Natural Language: a and b never occur at the same time but one of them holds in every time step.
 Given translations: {}
 Explanation: "a and b" from the input translates to the conjunction of atomic propositions a,b, i.e., it translates to "a & b".
 "a and b never occur" from the input translates to the temporal behavior that at all positions, i.e., globally, neither a nor b hold, i.e., "G(~(a & b))".
 The input additionally requires that "one of them holds in every time step", which means that a or b hold globally, i.e., it translates to "G(a | b)".
 Explanation dictionary: {"a and b": "a & b", "a and b never occur": "G(~(a & b))", "one of them holds in every time step": "G(a | b)"}
-So the final LTL translation is G(~(a & b)) & G(a | b).FINISH
+FINAL: G(~(a & b)) & G(a | b).FINISH
 Natural language: a can only happen if b happend before.
 Given translations: {}
 Explanation: "if b happend before" from the input means that until some point b will happen, i.e., it translates to "U b" and "a can only happen", means that a is not allowed to hold, i.e., it translates to "~ a".
 In combination, this sentence represents that something should not happen until a certain event happens, in this case a is not allowed to hold until b holds.
 Explanation dictionary: {"if b happend before": "U b", "a can only happen": "~ a"}
-So the final LTL translation is (~ a) U b.FINISH
+FINAL: (~ a) U b.FINISH
 Natural language: a holds until b holds or always a holds.
 Given translations: {}
 Explanation: "a holds until b holds" from the input translates to the temporal modality "a U b" and "or" from the input translates to the operator "|".
 "always a holds" from the input means that globally a holds, i.e., it translates to "G a".
 Explanation dictionary: {"a holds until b holds": "a U b", "or": "|", "always a holds": "G a"}
-So the final LTL translation is (a U b) | G a.FINISH
+FINAL: (a U b) | G a.FINISH

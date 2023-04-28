@@ -7,7 +7,11 @@ def parse_formulas(choices):
     parser = LTLfParser()
     parsed_result_formulas = []
     for c in choices:
-        formula_str = c.split("FINAL:")[1].strip(".")
+        try:
+            formula_str = c.split("FINAL:")[1].strip(".")
+        except:
+            formula_str = c
+
         try:
             parsed_formula = parser(formula_str)
             parsed_result_formulas.append(parsed_formula)
@@ -19,11 +23,14 @@ def parse_formulas(choices):
 def parse_explanation_dictionary(choices, nl):
     parsed_explanation_results = []
     for c in choices:
-        dict_string = "{" + c.split("dictionary")[1].split("{")[1].split("}")[0] + "}"
-        parsed_dict = ast.literal_eval(dict_string)
-        parsed_dict = dict(filter(lambda x: x[0] != nl, parsed_dict.items()))
-        if parsed_dict:
-            parsed_explanation_results.append(parsed_dict)
+        try:
+            dict_string = "{" + c.split("dictionary")[1].split("{")[1].split("}")[0] + "}"
+            parsed_dict = ast.literal_eval(dict_string)
+            parsed_dict = dict(filter(lambda x: x[0] != nl, parsed_dict.items()))
+            if parsed_dict:
+                parsed_explanation_results.append(parsed_dict)
+        except:
+            pass
     return parsed_explanation_results
 
 

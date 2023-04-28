@@ -2,6 +2,8 @@ import backend
 import numpy as np
 import argparse
 from tabulate import tabulate
+from ltlf2dfa.parser.ltlf import LTLfParser
+#import spot
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -11,9 +13,12 @@ def parse_args():
 
     parser.add_argument('--model', required=False, default="gpt-3.5-turbo", help='chose the deep learning model')
     parser.add_argument('--keyfile', required=False, default="", help='provide open ai key (for codex usage), or a huggingface api key (for bloom usage)')
+    parser.add_argument('--keydir', required=False, default="", help='if not specify keyfile, specify directory')
     parser.add_argument('--prompt', required=False, default="minimal", help='secifies the name of the promptfile')
-    parser.add_argument('--num_tries', required=False, default=3, help="Number of runs the underlying language model attempts a translation.")
+    parser.add_argument('--num_tries', required=False, default=3, type=int, help="Number of runs the underlying language model attempts a translation.")
     parser.add_argument('--temperature', required=False, default=0.2, type=float, help="Model temperature.")
+    parser.add_argument('--teacher_model', required=False, default="", help='chose the deep learning model to render the subtranslations for the student model (see teacher student experiment in the nl2spec paper)')
+
     args = parser.parse_args()
     return args
 
@@ -25,9 +30,10 @@ def get_dataset():
     for line in f:
         NL_data,label = line.split(";")
         NL_list.append(NL_data)
+        label_list.append(label)
     return NL_list, label_list
 
-def get_next_given_translation(backend_res):
+def get_next_given_translations(backend_res):
     final_translation = backend_res[0]
     intermediate_output = backend_res[1] #NL, F, confidence
     NL_list = intermediate_output[0]
@@ -41,40 +47,74 @@ def get_next_given_translation(backend_res):
     return next_given_translations
 
 def get_final_translation(backend_res):
-    return backend_res[0]
+    return str(backend_res[0][0])
 
-def call_backend(nl,model,keyfile,prompt):
+def call_backend(nl,model,prompt,num_tries,temperature,keyfile="",keydir="",given_translations="",**kwargs):
     call_args = {
         "model":model,
         "nl":nl,
         "fewshots":"",
         "keyfile":keyfile,
+        "keydir":keydir,
         "prompt":prompt,
         "maxtokens":64,
-        "given_translations":"",
-        "num_tries":3,
-        "temperature":0.2,
+        "given_translations":given_translations,
+        "num_tries":num_tries,
+        "temperature":temperature,
     }
     call_args = argparse.Namespace(**call_args)
     res = backend.call(call_args)
     return res
 
-def display_results(NL_list,label_list,predictions):
-    tab_dict = {"input":NL_list,"label":label_list,"predictions":predictions}
+def display_results(NL_list,label_list,predictions,correct_list):
+    tab_dict = {"input":NL_list,"label":label_list,"predictions":predictions,"correct":correct_list}
     print(tabulate(tab_dict,headers="keys"))
 
 def main():
     NL_list, label_list = get_dataset()
-    
-    #print(NL_list)
-    #args = parser.parse_args()
     args = parse_args()
     predictions = []
     for nl in NL_list:
-        res = call_backend(nl,model=args.model,keyfile=args.keyfile,prompt=args.prompt)
-        predictions.append(get_final_translation(res))
-    
-    display_results(NL_list,label_list,predictions)
+        if args.teacher_model != "":
+            teacher_dict = vars(args).copy()
+            teacher_dict["model"] = args.teacher_model
+            res = call_backend(nl,**teacher_dict)
+            given_sub_translations = str(get_next_given_translations(res))
+        else:
+            given_sub_translations = ""
+
+        try:
+            res = call_backend(nl,**vars(args),given_translations=given_sub_translations)
+            predictions.append(get_final_translation(res))
+        except:
+            predictions.append("")
+
+    parser = LTLfParser()
+    correct_list = []
+    for i in range(len(predictions)):
+        try:
+            label = parser(label_list[i])
+            pred = parser(predictions[i])
+            if label == pred:
+                correct_list.append(1)
+            else:
+                correct_list.append(0)
+        except:
+            pass
+
+    display_results(NL_list,label_list,predictions,correct_list)
+    print("ACCURACY:",np.mean(correct_list))
+    if args.teacher_model == "":
+        save_name = "nl2spec+"+args.model+"_initial"
+    else:
+        save_name = "nl2spec+teacher-"+args.teacher_model+"_student-"+args.model
+    NL_list.insert(0,"input")
+    NL_list = [entry.strip("\n") for entry in NL_list]
+    label_list.insert(0,"label")
+    label_list = [entry.strip("\n") for entry in label_list]
+    predictions.insert(0,"prediction")
+    correct_list.insert(0,"correct")
+    np.savetxt(save_name+".csv",[p for p in zip(NL_list,label_list,predictions,correct_list)],delimiter=';',fmt='%s')
 
 if __name__ == "__main__":
     main()

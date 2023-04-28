@@ -7,10 +7,10 @@ Natural Language: Length of transfer will be speciﬁed with REQ_VLD signal i.e.
 Given translations: {}
 Explanation: “Whenever” from the input refers to the PSL operator “always”, meaning that it should hold at any point in time. “REQ_VLD is high” from the input translates to REQ_VLD, “LEN1" from the input translates to LEN1, “LEN4” translates to LEN4, “LENX” translates to LENX and “shall be” represents an implication.
 Explanation dictionary: {“Whenever” : “always”, “REQ_VLD is high”: “REQ_VLD”, “LEN1": “LEN1”, “LEN4": “LEN4”, “LENX”: “LENX”, “shall be”: “->“}
-So the final PSL translation is always (REQ_VLD -> (LENX || LEN1 || LEN4))FINISH
+FINAL: always (REQ_VLD -> (LENX || LEN1 || LEN4))FINISH
 Natural Language: There cannot be conflict between signals indicating length of transfer thus LEN1, LEN4 and LENX signals cannot be high simultaneously.
 Given translations: {}
 Explanation: "LEN1", "LEN4", and "LENX" from the input translates to the variables "LEN1", "LEN4", and "LENX" respectively. "There cannot be conflict between signals" meaning that there can only be exactly one true at a time.
 "signals cannot be high simultaneously" also means that there can only be one variable high at a time step, i.e., the always is implicit.
 Explanation dictionary: {"LEN1": "LEN1", "LENX": "LENX", "LEN4": "LEN4", "there cannot be conflicts between signals": LENX -> (! LEN1 && ! LEN 4) & LEN1 -> (! LENX && ! LEN 4) & LEN4 -> (! LENX && ! LEN 1)"}
-So the final PSL translation is always LENX -> (! LEN1 && ! LEN 4) & always LEN1 -> (! LENX && ! LEN 4) & always LEN4 -> (! LENX && ! LEN 1)
+FINAL: always LENX -> (! LEN1 && ! LEN 4) & always LEN1 -> (! LENX && ! LEN 4) & always LEN4 -> (! LENX && ! LEN 1)
