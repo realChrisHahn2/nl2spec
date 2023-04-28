@@ -75,7 +75,7 @@ def prompt(args):
         fixed_prompt
         + "\nNatural Language: "
         + inpt
-        + "\nGiven translation:"
+        + "\nGiven translations: "
         + args.given_translations
         + "\nExplanation:"
     )

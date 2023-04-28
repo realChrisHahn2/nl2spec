@@ -79,17 +79,21 @@ def main():
         if args.teacher_model != "":
             teacher_dict = vars(args).copy()
             teacher_dict["model"] = args.teacher_model
-            res = call_backend(nl,**teacher_dict)
-            given_sub_translations = str(get_next_given_translations(res))
+            try:
+                res = call_backend(nl,**teacher_dict)
+                given_sub_translations = str(get_next_given_translations(res))
+            except:
+                given_sub_translations = ""
+            print("TEACHER SUB TRANSLATIONS")
+            print(given_sub_translations)
         else:
             given_sub_translations = ""
-
         try:
             res = call_backend(nl,**vars(args),given_translations=given_sub_translations)
             predictions.append(get_final_translation(res))
         except:
             predictions.append("")
-        #break
+        break
     parser = LTLfParser()
     correct_list = []
     for i in range(len(predictions)):
