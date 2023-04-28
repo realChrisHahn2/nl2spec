@@ -3,14 +3,15 @@ import ambiguity
 from ltlf2dfa.parser.ltlf import LTLfParser
 import ast
 
+
 def parse_formulas(choices):
     parser = LTLfParser()
     parsed_result_formulas = []
     for c in choices:
         try:
-            formula_str = c.split("So the final LTL translation is:")[1].strip(".")
+            formula_str = c.split("FINAL:")[1].strip(".")
         except:
-            #formula_str = c
+            # formula_str = c
             formula_str = ""
 
         try:
@@ -25,7 +26,9 @@ def parse_explanation_dictionary(choices, nl):
     parsed_explanation_results = []
     for c in choices:
         try:
-            dict_string = "{" + c.split("dictionary")[1].split("{")[1].split("}")[0] + "}"
+            dict_string = (
+                "{" + c.split("dictionary")[1].split("{")[1].split("}")[0] + "}"
+            )
             parsed_dict = ast.literal_eval(dict_string)
             parsed_dict = dict(filter(lambda x: x[0] != nl, parsed_dict.items()))
             if parsed_dict:
@@ -64,7 +67,9 @@ def prompt(args):
         fixed_prompt_file = open(os.path.join(prompt_dir, "indistribution.txt"))
         fixed_prompt = fixed_prompt_file.read()
     elif args.prompt == "amba_master":
-        fixed_prompt_file = open(os.path.join(prompt_dir, "amba_master_assumptions.txt"))
+        fixed_prompt_file = open(
+            os.path.join(prompt_dir, "amba_master_assumptions.txt")
+        )
         fixed_prompt = fixed_prompt_file.read()
     elif args.prompt == "amba_slave":
         fixed_prompt_file = open(os.path.join(prompt_dir, "amba_slave_guarantees.txt"))
@@ -91,7 +96,11 @@ def extract_subinfo(choices, args, n):
     final_translation = ambiguity.ambiguity_final_translation(parsed_result_formulas, n)
     parse_explain = parse_explanation_dictionary(choices, args.nl)
     intermediate_translation = ambiguity.ambiguity_detection_translations(
-        parse_explain, n, ast.literal_eval(args.locked_translations) if "locked_translations" in args else {}
+        parse_explain,
+        n,
+        ast.literal_eval(args.locked_translations)
+        if "locked_translations" in args
+        else {},
     )
     intermediate_output = generate_intermediate_output(intermediate_translation)
     return final_translation, intermediate_output
