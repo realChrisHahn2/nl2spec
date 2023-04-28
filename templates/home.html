@@ -5,7 +5,7 @@
     <div class="modal-dialog  modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Examples</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Expert Dataset</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -22,7 +22,7 @@
             <h2 style="float: left;">Prompt</h2>
             <button style="float: right; margin-left: 10px;"" data-bs-toggle="modal" data-bs-target="#examples"
                 class="btn btn-secondary" type="button" title="Show examples"><i class="bi bi-folder-fill"></i>
-                Examples</button>
+                Expert Dataset</button>
         </div>
         <div class="col-md-12">
             <div class="form-floating">
@@ -183,7 +183,7 @@
         div1.classList.add("col-md-12")
         h1 = document.createElement('h3')
         h1.style.float = "left"
-        h1.textContent = "Ground Truth"
+        h1.textContent = "Expected Translation of Expert (Ground Truth)"
         div1.appendChild(h1)
 
         div2 = document.createElement('div')
@@ -193,7 +193,7 @@
         textarea1.readOnly = true
         textarea1.id = "ground_truth"
         textarea1.name = "ground_truth"
-        textarea1.textContent = ground_truth_text
+        textarea1.textContent = ground_truth_text.replaceAll( /&lt;/g, "<" ).replaceAll( /&gt;/g, ">" ).replaceAll('&amp;', '&')
         div2.appendChild(textarea1)
         insertAfter = document.getElementById("subtranslations")
         insertAfter.parentNode.insertBefore(div1, insertAfter.nextSibling)
