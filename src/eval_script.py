@@ -3,7 +3,7 @@ import numpy as np
 import argparse
 from tabulate import tabulate
 from ltlf2dfa.parser.ltlf import LTLfParser
-#import spot
+import spot
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -23,14 +23,15 @@ def parse_args():
     return args
 
 def get_dataset():
-    f = open("../examples.csv")
+    f = open("../expert_LTL_dataset.txt")
     f.readline()
     NL_list = []
     label_list = []
     for line in f:
         NL_data,label = line.split(";")
         NL_list.append(NL_data)
-        label_list.append(label)
+        parser = LTLfParser()
+        label_list.append(str(parser(label)))
     return NL_list, label_list
 
 def get_next_given_translations(backend_res):
@@ -47,7 +48,7 @@ def get_next_given_translations(backend_res):
     return next_given_translations
 
 def get_final_translation(backend_res):
-    return str(backend_res[0][0])
+    return str(backend_res[0][0]).strip("\n")
 
 def call_backend(nl,model,prompt,num_tries,temperature,keyfile="",keydir="",given_translations="",**kwargs):
     call_args = {
@@ -88,33 +89,35 @@ def main():
             predictions.append(get_final_translation(res))
         except:
             predictions.append("")
-
+        #break
     parser = LTLfParser()
     correct_list = []
     for i in range(len(predictions)):
         try:
             label = parser(label_list[i])
             pred = parser(predictions[i])
+            #label = spot.formula(str(label_list[i]))
+            #pred = spot.formula(str(predictions[i]))
             if label == pred:
                 correct_list.append(1)
             else:
                 correct_list.append(0)
         except:
-            pass
+            correct_list.append(0)
 
     display_results(NL_list,label_list,predictions,correct_list)
-    print("ACCURACY:",np.mean(correct_list))
+    accuracy = np.mean(correct_list)
+    print("ACCURACY:",accuracy)
     if args.teacher_model == "":
-        save_name = "nl2spec+"+args.model+"_initial"
+        save_name = "results-nl2spec_model-"+args.model+"_prompt-"+args.prompt+"_initial"
     else:
-        save_name = "nl2spec+teacher-"+args.teacher_model+"_student-"+args.model
+        save_name = "results-nl2spec_teacher-"+args.teacher_model+"_student-"+args.model+ "_prompt-"+args.prompt
     NL_list.insert(0,"input")
-    NL_list = [entry.strip("\n") for entry in NL_list]
     label_list.insert(0,"label")
-    label_list = [entry.strip("\n") for entry in label_list]
     predictions.insert(0,"prediction")
     correct_list.insert(0,"correct")
     np.savetxt(save_name+".csv",[p for p in zip(NL_list,label_list,predictions,correct_list)],delimiter=';',fmt='%s')
+    np.savetxt(save_name+".accuracy",[accuracy])
 
 if __name__ == "__main__":
     main()

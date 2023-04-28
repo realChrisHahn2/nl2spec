@@ -8,9 +8,10 @@ def parse_formulas(choices):
     parsed_result_formulas = []
     for c in choices:
         try:
-            formula_str = c.split("FINAL:")[1].strip(".")
+            formula_str = c.split("So the final LTL translation is:")[1].strip(".")
         except:
-            formula_str = c
+            #formula_str = c
+            formula_str = ""
 
         try:
             parsed_formula = parser(formula_str)
@@ -78,7 +79,8 @@ def prompt(args):
         + args.given_translations
         + "\nExplanation:"
     )
-    # print(final_prompt)
+    print("FINAL PROMPT:")
+    print(final_prompt)
     return final_prompt
 
 
