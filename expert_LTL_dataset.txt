@@ -1,0 +1,36 @@
+Every a is eventually followed by a e.;G(a -> F e)
+It is never the case that a and b hold at the same time.;G(!(a & b))
+Whenever a is enabled, b is enabled three steps later.;G(a -> X (X (X b)))
+e must hold everywhere until from some point on, d holds infinitely often.;e U (G (F d))
+If b holds at some point, a has to hold somewhere beforehand.;(F b) -> (!b U (a & !b))
+Whenever a holds, b holds as well.;G(a -> b)
+Both a and b hold in every time step.;G (a && b)
+a holds always and whenever b holds, c does not hold.;G a && G(b -> !c)
+If it is the case that every a is eventually followed by a b, then c needs to holds infinitely often.;G(a -> F b) -> G F c
+If a holds infinitely often, then b holds infinitely often as well.;G F a -> G F b
+Either a or b holds infinitely often;G F a || G F b
+a never holds from some point in time on.;F G ! a
+Whenever a and b do not hold, c holds eventually.;G (!(a && b) -> F c)
+a and b never occur at the same time but one of them holds in every time step.;G(!(a &&b)) && G(a || b)
+Whenever the inputs a and b are the same, the outputs c and d are the same.;G ((a <-> b) -> (c <-> d))
+a can only happen if b happend before;(! a) U b
+Once a happened, b won't happen again.;G (a -> X G ! b)
+a releases b;(b U (b & ! a)) | G b
+a and b won't occur at the same time;G !(a & b)
+Whenever a holds and b holds in the next step, then c holds one step after b.;G (a && X b -> X X c)
+Whenever a holds, b holds eventually from the next step on.;G (a -> X F b)
+a holds in every fifth step.;a && G (a -> X ! a && X X ! a && X X X ! a && X X X X ! a && X X X X X a)
+Either a holds infinitely often or b holds in the next step.;G F a || X b
+a will hold at all instances.;G (a)
+Whenever a holds, b must hold in the next two steps;G (a -> (b | X b))
+One of the following aps will hold at all instances: a,b,c;G (a | b | c)
+If a holds b will eventually hold;G (a -> F b)
+a must always hold, but if is execeeds, it allow two timestamps to recover.;! G (! (a && X a))
+not a holds at most two timestamps;! G (! (a && X a))
+a can only hold every three timestamps;G ( a -> (X !a | XX !a | XXX !a))
+Every a is followed by a b.;G ( a -> X b)
+Eventually a and b hold.;F (a && b)
+Both a and b hold eventually.;F a && F b
+It is always the case that a is the same as b in the next step.;G (a <-> X b)
+If b holds then, in the next step, c holds until a holds or always c holds;b -> X ((c U a) || G c)
+a holds until b holds or always a holds;(a U b) || G a
