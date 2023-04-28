@@ -9,7 +9,7 @@ def parse_formulas(choices):
     parsed_result_formulas = []
     for c in choices:
         try:
-            formula_str = c.split("FINAL:")[1].strip(".")
+            formula_str = c.split("So the final LTL translation is:")[1].strip(".")
         except:
             # formula_str = c
             formula_str = ""
@@ -76,14 +76,23 @@ def prompt(args):
         fixed_prompt = fixed_prompt_file.read()
     else:
         fixed_prompt = args.prompt
-    final_prompt = (
-        fixed_prompt
-        + "\nNatural Language: "
-        + inpt
-        + "\nGiven translations: "
-        + args.given_translations
-        + "\nExplanation:"
-    )
+    if args.given_translations != "":
+        final_prompt = (
+            fixed_prompt
+            + "\nNatural Language: "
+            + inpt
+            + "\nGiven translations: "
+            + args.given_translations
+            + "\nExplanation:"
+        )
+    else:
+        final_prompt = (
+            fixed_prompt
+            + "\nNatural Language: "
+            + inpt
+            + "\nGiven translations: {}"
+            + "\nExplanation:"
+        )
     print("FINAL PROMPT:")
     print(final_prompt)
     return final_prompt
