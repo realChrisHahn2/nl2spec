@@ -27,7 +27,7 @@
         <div class="col-md-12">
             <div class="form-floating">
                 <textarea class="form-control" id="nl" placeholder="" name="nl"
-                    onchange="removeGroundTruth()">{{ input }}</textarea>
+                    onchange="editTextInput()"></textarea>
                 <label for="nl">Translate this sentence to LTL:</label>
             </div>
         </div>
@@ -125,6 +125,7 @@
     document.getElementById("models").value = "{{models}}"
     document.getElementById("temperature").value = "{{temperature}}"
     setLabel(document.getElementById("temperature"))
+    document.getElementById("nl").textContent = htmlDecode("{{ input }}")
 
 
     var num_current_subtranslations = 0
@@ -148,9 +149,13 @@
     }
 
     if ('{{ ground_truth }}' != "") {
-        addGroundTruth('{{ ground_truth }}')
+        addGroundTruth(htmlDecode('{{ ground_truth }}'))
     }
 
+    function editTextInput() {
+        deleteResult()
+        removeGroundTruth()
+    }
     function setLabel(elem) {
         document.getElementById("temp_value").textContent = (elem.value * 0.1).toFixed(2);
     }
@@ -173,6 +178,7 @@
 
         removeGroundTruth()
         deleteSubtAll()
+        deleteResult()
 
         document.getElementById("nl").textContent = nl
         addGroundTruth(ltl)
@@ -194,7 +200,7 @@
         textarea1.readOnly = true
         textarea1.id = "ground_truth"
         textarea1.name = "ground_truth"
-        textarea1.textContent = ground_truth_text.replaceAll( /&lt;/g, "<" ).replaceAll( /&gt;/g, ">" ).replaceAll('&amp;', '&')
+        textarea1.textContent = ground_truth_text
         div2.appendChild(textarea1)
         insertAfter = document.getElementById("subtranslations")
         insertAfter.parentNode.insertBefore(div1, insertAfter.nextSibling)
@@ -419,6 +425,12 @@
         div2.classList.add('col-md-12')
         div2.appendChild(div1)
         document.getElementById('form').appendChild(div2)
+    }
+
+    function deleteResult() {
+        if (document.getElementById("resultltl") != null) {
+            document.getElementById("resultltl").parentElement.parentElement.remove()
+        }
     }
 
     function fillExamples() {
