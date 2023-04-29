@@ -3,7 +3,7 @@ FROM --platform=linux/amd64 ubuntu:jammy
 RUN apt-get -q update && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get -q install -y \
-    python3 python3-pip
+    python3 python3-pip vim
 
 COPY . /home/nl2spec
 
