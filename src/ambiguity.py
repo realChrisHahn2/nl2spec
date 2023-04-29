@@ -34,6 +34,8 @@ def fill_with_none(dict, n):
 
 
 def most_freq(l):
+    if len(l) == 0:
+        return "No output"
     try:
         res = mode(l)
     except:

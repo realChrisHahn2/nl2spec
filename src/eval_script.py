@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument(
         "--keydir",
         required=False,
-        default="",
+        default="../keys/",
         help="if not specify keyfile, specify directory",
     )
     parser.add_argument(
@@ -58,23 +58,65 @@ def parse_args():
         default="",
         help="chose the deep learning model to render the subtranslations for the student model (see teacher student experiment in the nl2spec paper)",
     )
-
+    parser.add_argument(
+        "--datafile",
+        required=False,
+        default="",
+        help="specify dataset file",
+    )
+    
+    parser.add_argument(
+        "--smoke",
+        required=False,
+        default=False,
+        action="store_true",
+        #type=bool,
+        help="set to run smoke test",
+    )
     args = parser.parse_args()
     return args
 
 
-def get_dataset():
-    f = open("../expert_LTL_dataset.txt")
-    f.readline()
-    NL_list = []
-    label_list = []
-    for line in f:
-        NL_data, label = line.split(";")
-        NL_list.append(NL_data)
-        parser = LTLfParser()
-        label_list.append(str(parser(label)))
-    return NL_list, label_list
-
+def get_dataset(datafile):
+    if datafile == "":
+        f = open("../datasets/expert_LTL_dataset.txt")
+        f.readline()
+        NL_list = []
+        label_list = []
+        for line in f:
+            NL_data, label = line.split(";")
+            NL_list.append(NL_data)
+            parser = LTLfParser()
+            label_list.append(str(parser(label)))
+        return NL_list, label_list, None
+    elif datafile == "codex-initial":
+        f = open("../experiments/codex-initial_predictions.txt")
+        f.readline()
+        NL_list = []
+        label_list = []
+        subtranslation_list = []
+        for line in f:
+            NL_data, label,final_pred,subtranslations = line.split(";")
+            NL_list.append(NL_data)
+            parser = LTLfParser()
+            label_list.append(str(parser(label)))
+            subtranslation_list.append(subtranslations)
+        return NL_list, label_list, subtranslation_list
+    elif datafile == "gpt-3.5-turbo-interactive":
+        f = open("../experiments/gpt-3.5-turbo-interactive_predictions.txt")
+        f.readline()
+        NL_list = []
+        label_list = []
+        subtranslation_list = []
+        for line in f:
+            NL_data, label,final_pred,subtranslations = line.split(";")
+            NL_list.append(NL_data)
+            parser = LTLfParser()
+            label_list.append(str(parser(label)))
+            subtranslation_list.append(subtranslations)
+        return NL_list, label_list, subtranslation_list
+    else:
+        raise
 
 def get_next_given_translations(backend_res):
     final_translation = backend_res[0]
@@ -133,11 +175,18 @@ def display_results(NL_list, label_list, predictions, correct_list):
 
 
 def main():
-    NL_list, label_list = get_dataset()
     args = parse_args()
+    NL_list, label_list,subtranslation_list = get_dataset(args.datafile)
     predictions = []
-    for nl in NL_list:
-        if args.teacher_model != "":
+    if not args.smoke:
+        num_examples = len(NL_list)
+    else:
+        num_examples = 2
+    for i in range(num_examples):
+        nl = NL_list[i]
+        if subtranslation_list is not None:
+            given_sub_translations = subtranslation_list[i]
+        elif args.teacher_model != "":
             teacher_dict = vars(args).copy()
             teacher_dict["model"] = args.teacher_model
             try:
@@ -147,10 +196,9 @@ def main():
                 given_sub_translations = ""
             print("TEACHER SUB TRANSLATIONS")
             print(given_sub_translations)
-            res = call_backend(nl, **teacher_dict)
-            given_sub_translations = str(get_next_given_translations(res))
         else:
             given_sub_translations = ""
+        
         try:
             res = call_backend(
                 nl, **vars(args), given_translations=given_sub_translations
@@ -171,21 +219,23 @@ def main():
                 correct_list.append(1)
             else:
                 correct_list.append(0)
-        except:
+        except Exception as e:
+            print(e)
             correct_list.append(0)
 
     display_results(NL_list, label_list, predictions, correct_list)
     accuracy = np.mean(correct_list)
     print("ACCURACY:", accuracy)
-    if args.teacher_model == "":
+    if args.datafile != "":
         save_name = (
-            "results-nl2spec_model-"
+            "results-nl2spec_subtranslation-"
+            + args.datafile
+            + "_model-"
             + args.model
             + "_prompt-"
             + args.prompt
-            + "_initial"
         )
-    else:
+    elif args.teacher_model != "":
         save_name = (
             "results-nl2spec_teacher-"
             + args.teacher_model
@@ -194,12 +244,21 @@ def main():
             + "_prompt-"
             + args.prompt
         )
+    else:
+        save_name = (
+            "results-nl2spec_model-"
+            + args.model
+            + "_prompt-"
+            + args.prompt
+            + "_initial"
+        )
+
     NL_list.insert(0, "input")
     label_list.insert(0, "label")
     predictions.insert(0, "prediction")
     correct_list.insert(0, "correct")
     np.savetxt(
-        save_name + ".csv",
+        save_name + ".txt",
         [p for p in zip(NL_list, label_list, predictions, correct_list)],
         delimiter=";",
         fmt="%s",

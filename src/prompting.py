@@ -12,7 +12,8 @@ def parse_formulas(choices):
             formula_str = c.split("So the final LTL translation is:")[1].strip(".")
         except:
             # formula_str = c
-            formula_str = ""
+            #formula_str = ""
+            continue
 
         try:
             parsed_formula = parser(formula_str)

@@ -1,0 +1,37 @@
+Natural Language;Label;Initial Translation;Subtranslations that lead to correct result
+Every a is eventually followed by a e.;G(a -> F e);G((a -> F(e)));{}
+It is never the case that a and b hold at the same time.;G(!(a & b));!(F((a & b)));{"it is never the case": "G !", "a and b hold at the same time": "a & b"}
+Whenever a is enabled, b is enabled three steps later.;G(a -> X (X (X b)));((a -> e) -> X(X(X(b))));{"a is enabled": "a", "b is enabled three steps later": "X X X b", "whenever": "G", "whenever a is enabled": "G a"}
+e must hold everywhere until from some point on, d holds infinitely often.;e U (G (F d));G((e -> (e U G(F(d)))));{"e must hold everywhere until": "e U", "d holds infinitely often": "GF d", "everywhere until": "U"}
+If b holds at some point, a has to hold somewhere beforehand.;(F b) -> (!b U (a & !b));(F(b) -> G((a U b)));{"b holds at some point": "F b", "a has to hold somewhere beforehand": "! b U (a & !b)"}
+Whenever a holds, b holds as well.;G(a -> b);G((a -> b));{}
+Both a and b hold in every time step.;G (a && b);G((a & b));{}
+a holds always and whenever b holds, c does not hold.;G a && G(b -> !c);(G(a) & (b -> !(c)));{"a holds always": "G a", "whenever b holds, c does not hold": "G (b -> ~c)", "and": "&"}
+If it is the case that every a is eventually followed by a b, then c needs to holds infinitely often.;G(a -> F b) -> G F c;(G((a -> F(b))) -> G(F(c)));{}
+If a holds infinitely often, then b holds infinitely often as well.;G F a -> G F b;(G(F(a)) -> G(F(b)));{}
+Either a or b holds infinitely often;G F a || G F b;G(F((a | b)));{}
+a never holds from some point in time on.;F G ! a;G(F(!(a)));{"from some point in time on": "F G", "a never holds": "~a"}
+Whenever a and b do not hold, c holds eventually.;G (!(a && b) -> F c);G((!((a & b)) -> F(c)));{"whenever": "G"}
+a and b never occur at the same time but one of them holds in every time step.;G(!(a &&b)) && G(a || b);(G(!((a & b))) & G((a | b)));{"a and b never occur at the same time": "G ~(a & b)"}
+Whenever the inputs a and b are the same, the outputs c and d are the same.;G ((a <-> b) -> (c <-> d));G(((a <-> b) -> (c <-> d)));{}
+a can only happen if b happend before;(! a) U b;(a -> F(b));{}
+Once a happened, b will not happen again.;G (a -> X G ! b);F a -> ~G b. ;{}
+a releases b;(b U (b & ! a)) | G b;a R b. ;{}
+a and b will not occur at the same time;G !(a & b);G(!((a & b)));{}
+Whenever a holds and b holds in the next step, then c holds one step after b.;G (a && X b -> X X c);G(((a & X(b)) -> (X(b) -> X(c))));{}
+Whenever a holds, b holds eventually from the next step on.;G (a -> X F b);a -> X (F(b));{"whenever": "G"}
+a holds in every fifth step.;a && G (a -> X ! a && X X ! a && X X X ! a && X X X X ! a && X X X X X a);G (a holds at time t if t % 5 = 0). Note that this formula contains a non-atomic proposition, but it can be rewritten as a conjunction of atomic propositions using the distributive property of the modulo operator. For example, if the time steps are numbered from 0 to infinity, the formula can be rewritten as G ((a holds at time 0) & ~(a holds at time 1) & ~(a holds at time 2) & ~(a holds at time 3) & ~(a holds at time 4) & (a holds at time 5) & ...);{}
+Either a holds infinitely often or b holds in the next step.;G F a || X b;(G(F(a)) | X(b));{}
+a will hold at all instances.;G (a);G(a);{}
+Whenever a holds, b must hold in the next two steps;G (a -> (b | X b));a -> (X b & XXb);{"b most hold in the next two steps": "(b | X b)", "a holds": "a", "whenever": "G"}
+One of the following aps will hold at all instances: a,b,c;G (a | b | c);G((a | b | c));{}
+If a holds b will eventually hold;G (a -> F b);a -> F b. ;{}
+a must always hold, but if is execeeds, it allow two timestamps to recover.;! G (! (a && X a));G a -> (F (not a) -> (X(Xa)) U a);{}
+not a holds at most two timestamps;! G (! (a && X a));!((a & X(a) & X(a)));{}
+a can only hold every three timestamps;G ( a -> (X !a | XX !a | XXX !a));(X !a | XX !a | XXX !a);{"every three timestep": "(X !a | XX !a | XXX !a)", "a can only hold": "G (a -> )"}
+Every a is followed by a b.;G ( a -> X b);G((a -> X(b)));{}
+Eventually a and b hold.;F (a && b);F((a & b));{}
+Both a and b hold eventually.;F a && F b;F((a & b));{}
+It is always the case that a is the same as b in the next step.;G (a <-> X b);G((a <-> X(b)));{}
+If b holds then, in the next step, c holds until a holds or always c holds;b -> X ((c U a) || G c);(b -> (X((c U a)) | G(c)));{}
+a holds until b holds or always a holds;(a U b) || G a;((a U b) | G(a));{}
