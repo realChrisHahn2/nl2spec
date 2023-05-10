@@ -189,24 +189,18 @@ def main():
         elif args.teacher_model != "":
             teacher_dict = vars(args).copy()
             teacher_dict["model"] = args.teacher_model
-            try:
-                res = call_backend(nl,**teacher_dict)
-                given_sub_translations = str(get_next_given_translations(res))
-            except:
-                given_sub_translations = ""
+            res = call_backend(nl,**teacher_dict)
+            given_sub_translations = str(get_next_given_translations(res))
             print("TEACHER SUB TRANSLATIONS")
             print(given_sub_translations)
         else:
             given_sub_translations = ""
         
-        try:
-            res = call_backend(
-                nl, **vars(args), given_translations=given_sub_translations
-            )
-            predictions.append(get_final_translation(res))
-        except:
-            predictions.append("")
-        #break
+        res = call_backend(
+            nl, **vars(args), given_translations=given_sub_translations
+        )
+        predictions.append(get_final_translation(res))
+
     parser = LTLfParser()
     correct_list = []
     for i in range(len(predictions)):
@@ -220,12 +214,13 @@ def main():
             else:
                 correct_list.append(0)
         except Exception as e:
-            print(e)
             correct_list.append(0)
 
     display_results(NL_list, label_list, predictions, correct_list)
     accuracy = np.mean(correct_list)
     print("ACCURACY:", accuracy)
+    if args.smoke:
+        print("backend smoke test success")
     if args.datafile != "":
         save_name = (
             "results-nl2spec_subtranslation-"
