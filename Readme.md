@@ -11,13 +11,18 @@ Fulfil dependencies:
 - [ltlf2dfa](https://github.com/whitemech/LTLf2DFA)
 - [huggingface](https://huggingface.co/)
 - [openai-api](https://openai.com/blog/openai-api)
+- [google-cloud-aiplatform](https://cloud.google.com/python/docs/reference/aiplatform/latest/index.html)
 
-To use the tool, a [huggingface](huggingface.co) or an [OpenAI](openai.com) key, for access to Bloom or Codex is needed. See [Extendability](#extendability). The tool is using the huggingface and openai apis respectively.
+For using the models, access to their apis is necessary.
+ - For bloom and bloomz, a [huggingface](huggingface.co) *User Access Token* is needed. You can create a token and use bloom/bloomz for free.
+ - For Codex / GPT-based models, an [OpenAI](openai.com) *API key* is needed. See [OpenAI's Pricing](https://openai.com/pricing)
+ - For using PaLM, access through *google cloud platform* is required. Set up a project in [google cloud platform](https://console.cloud.google.com/) with [Vertex AI enabled](https://console.cloud.google.com/vertex-ai) and [authenticate with the Google Cloud CLI](https://cloud.google.com/cli). See [Vertex AI pricing](https://cloud.google.com/vertex-ai/pricing)
+ - See [Extendability](#extendability) on how to add more models.
 
 # Run frontend
 
 From inside the ```src``` folder:
-- create the following file and paste your open ai or hf key into: ```keys/oai_key.txt``` or ```keys/hf_key.txt```
+- create the following file and paste your open ai, hf key or google project id into: ```keys/oai_key.txt```, ```keys/hf_key.txt``` or ```keys/google_project_id.txt```
 - ```python3 -m flask --app frontend.py run```
 - add ```--debug``` for debug mode
 - Then open web-based tool at http://127.0.0.1:5000
@@ -33,6 +38,10 @@ E.g., with gpt-3.5:
 or bloom
 
 ```python3 nl2ltl.py --model bloom --keyfile PATH/TO/YOUR/HFKEY --nl "Every request is eventually followed by a grant." --num_tries 3 --temperature 0.2 --prompt minimal```
+
+or PaLM
+
+```python3 nl2ltl.py --model text-bison@001 --keyfile PATH/TO/YOUR/GCLOUD/PROJECTID --nl "Every request is eventually followed by a grant." --num_tries 3 --temperature 0.2 --prompt minimal```
 
 # Prompting
 
