@@ -14,7 +14,7 @@ def parse_args():
     parser.add_argument('--prompt', required=False, default="minimal", help='secifies the name of the promptfile')
     parser.add_argument('--maxtokens', required=False, default=64, help='Maximum number of tokens to compute')
     parser.add_argument('--given_translations', required=False, default="", help='Provides given translations')
-    parser.add_argument('--num_tries', required=False, default=3, help="Number of runs the underlying language model attempts a translation.")
+    parser.add_argument('--num_tries', type=int, required=False, default=3, help="Number of runs the underlying language model attempts a translation.")
     parser.add_argument('--temperature', required=False, default=0.2, type=float, help="Model temperature.")
     args = parser.parse_args()
     return args

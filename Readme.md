@@ -28,7 +28,7 @@ Can also be run from command line from the ```scr``` folder. See ```python3 nl2l
 
 E.g., with gpt-3.5:
 
-```python3 nl2ltl.py --model gpt35 --keyfile PATH/TO/YOUR/OPENAIKEY --nl "Globally a and b until c." --num_tries 3 --temperature 0.2 --prompt minimal```
+```python3 nl2ltl.py --model gpt-3.5-turbo --keyfile PATH/TO/YOUR/OPENAIKEY --nl "Globally a and b until c." --num_tries 3 --temperature 0.2 --prompt minimal```
 
 or bloom
 
