@@ -29,9 +29,10 @@ def home():
             or form_data["models"] == "code-davinci-edit-001"
         ):
             keyfile = os.path.join("..", "keys", "oai_key.txt")
-        if (form_data["models"] == "bloom"
-            or form_data["models"] == "bloomz"):
+        if form_data["models"] == "bloom" or form_data["models"] == "bloomz":
             keyfile = os.path.join("..", "keys", "hf_key.txt")
+        if form_data["models"] == "text-bison@001":
+            keyfile = os.path.join("..", "keys", "google_project_id.txt")
         ns = Namespace(
             keyfile=keyfile,
             maxtokens=128,
@@ -75,7 +76,9 @@ def home():
 
 
 def load_examples():
-    return json.dumps(pd.read_csv(os.path.join("..", "examples.csv"), delimiter=";").values.tolist())
+    return json.dumps(
+        pd.read_csv(os.path.join("..", "examples.csv"), delimiter=";").values.tolist()
+    )
 
 
 def subtranslation_gen(form_data):

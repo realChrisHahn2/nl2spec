@@ -1,17 +1,20 @@
-import openai
-from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModel, pipeline
-import requests
-from statistics import mode
-import requests
-import prompting
 import os
+from statistics import mode
+
+import openai
+import requests
+import vertexai
+from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer, pipeline
+from vertexai.preview.language_models import TextGenerationModel
+
+import prompting
 
 
 def gpt_35_turbo(args):
     if args.keyfile != "":
         keyfile = args.keyfile
     else:
-        keyfile = os.path.join(args.keydir,"oai_key.txt")
+        keyfile = os.path.join(args.keydir, "oai_key.txt")
     key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
@@ -42,7 +45,7 @@ def code_davinci_002(args):
     if args.keyfile != "":
         keyfile = args.keyfile
     else:
-        keyfile = os.path.join(args.keydir,"oai_key.txt")
+        keyfile = os.path.join(args.keydir, "oai_key.txt")
     key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
@@ -75,7 +78,7 @@ def text_davinci_003(args):
     if args.keyfile != "":
         keyfile = args.keyfile
     else:
-        keyfile = os.path.join(args.keydir,"oai_key.txt")
+        keyfile = os.path.join(args.keydir, "oai_key.txt")
     key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
@@ -108,7 +111,7 @@ def code_davinci_edit_001(args):
     if args.keyfile != "":
         keyfile = args.keyfile
     else:
-        keyfile = os.path.join(args.keydir,"oai_key.txt")
+        keyfile = os.path.join(args.keydir, "oai_key.txt")
     key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
@@ -134,7 +137,32 @@ def code_davinci_edit_001(args):
     # print(response["choices"][0]["text"])
     choices = []
     for i in range(0, n):
-        output = response["choices"][i]["text"][len(prompt)-8:].split("FINISH")[0]
+        output = response["choices"][i]["text"][len(prompt) - 8 :].split("FINISH")[0]
+        choices.append(output)
+    return prompting.extract_subinfo(choices, args, n)
+
+
+def text_bison_001(args):
+    if args.keyfile != "":
+        keyfile = args.keyfile
+    else:
+        keyfile = os.path.join(args.keydir, "google_project_id.txt")
+    key = open(keyfile).readline().strip("\n")
+    if key == "":
+        raise Exception("No key provided.")
+    vertexai.init(project=key)
+    model = TextGenerationModel.from_pretrained("text-bison@001")
+    n = args.num_tries
+
+    def query():
+        return model.predict(
+            prompting.prompt(args), temperature=args.temperature, max_output_tokens=300
+        )
+
+    choices = []
+    for i in range(0, n):
+        repsonse = query()
+        output = repsonse.text.split("FINISH")[0]
         choices.append(output)
     return prompting.extract_subinfo(choices, args, n)
 
@@ -146,7 +174,7 @@ def bloom(args):
     if args.keyfile != "":
         keyfile = args.keyfile
     else:
-        keyfile = os.path.join(args.keydir,"hf_key.txt")
+        keyfile = os.path.join(args.keydir, "hf_key.txt")
     key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
@@ -175,6 +203,7 @@ def bloom(args):
         choices.append(output)
     return prompting.extract_subinfo(choices, args, n)
 
+
 def bloomz(args):
     n = args.num_tries
     input_prompt = prompting.prompt(args)
@@ -182,7 +211,7 @@ def bloomz(args):
     if args.keyfile != "":
         keyfile = args.keyfile
     else:
-        keyfile = os.path.join(args.keydir,"hf_key.txt")
+        keyfile = os.path.join(args.keydir, "hf_key.txt")
     key = open(keyfile).readline().strip("\n")
     if key == "":
         raise Exception("No key provided.")
