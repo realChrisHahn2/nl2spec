@@ -58,6 +58,9 @@ def prompt(args):
     if args.prompt == "minimal":
         fixed_prompt_file = open(os.path.join(prompt_dir, "minimal.txt"))
         fixed_prompt = fixed_prompt_file.read()
+    elif args.prompt == "minimal_par":
+        fixed_prompt_file = open(os.path.join(prompt_dir, "minimal_par.txt"))
+        fixed_prompt = fixed_prompt_file.read()
     elif args.prompt == "smart":
         fixed_prompt_file = open(os.path.join(prompt_dir, "smart.txt"))
         fixed_prompt = fixed_prompt_file.read()
