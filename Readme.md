@@ -78,11 +78,19 @@ Additionally, the tool can be extended to more fine-tuned or other upcoming open
 # How to cite
 
 ```
-@article{nl2spec,
-  author    = {Matthias Cosler, Christopher Hahn, Daniel Mendoza, Frederik Schmitt, Caroline Trippel},
-  title     = {nl2spec: Interactively Translating Unstructured Natural Language to Temporal Logics with Large Language Models},
-  publisher = {arXiv},
-  year      = {2023},
-  url       = {https://arxiv.org/abs/2303.04864}
+@inproceedings{nl2spec,
+	title = {nl2spec: Interactively Translating Unstructured Natural Language to Temporal Logics with Large Language Models},
+	author = {Cosler, Matthias and Hahn, Christopher and Mendoza, Daniel and Schmitt, Frederik and Trippel, Caroline},
+	booktitle = {Computer {Aided} {Verification}},
+	series = {Lecture {Notes} in {Computer} {Science}},
+	address = {Cham},
+	isbn = {978-3-031-37703-7},
+	shorttitle = {nl2spec},
+	doi = {10.1007/978-3-031-37703-7_18},
+	language = {en},
+	publisher = {Springer Nature Switzerland},
+	editor = {Enea, Constantin and Lal, Akash},
+	year = {2023},
+	pages = {383--396},
 }
 ```
