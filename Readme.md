@@ -6,18 +6,20 @@ The tool works best when providing in-distribution few-shot examples (see [Promp
 
 # Install
 
-Fulfil dependencies:
+Fulfill dependencies:
 - [flask](https://flask.palletsprojects.com/en/2.2.x/)
 - [ltlf2dfa](https://github.com/whitemech/LTLf2DFA)
 - [huggingface](https://huggingface.co/)
 - [openai-api](https://openai.com/blog/openai-api)
 - [google-cloud-aiplatform](https://cloud.google.com/python/docs/reference/aiplatform/latest/index.html)
 
-For using the models, access to their apis is necessary.
+All model inferences run in the cloud. Therefore, access to the respective APIs is necessary.
  - For bloom and bloomz, a [huggingface](huggingface.co) *User Access Token* is needed. You can create a token and use bloom/bloomz for free.
  - For Codex / GPT-based models, an [OpenAI](openai.com) *API key* is needed. See [OpenAI's Pricing](https://openai.com/pricing)
- - For using PaLM, access through *google cloud platform* is required. Set up a project in [google cloud platform](https://console.cloud.google.com/) with [Vertex AI enabled](https://console.cloud.google.com/vertex-ai) and [authenticate with the Google Cloud CLI](https://cloud.google.com/cli). See [Vertex AI pricing](https://cloud.google.com/vertex-ai/pricing)
+ - For using PaLM, access through *google cloud platform* is required. Set up a project in [google cloud platform](https://console.cloud.google.com/) with [Vertex AI enabled](https://console.cloud.google.com/vertex-ai) and [authenticate with the Google Cloud CLI](https://cloud.google.com/cli). See [Vertex AI pricing](https://cloud.google.com/vertex-ai/pricing).
  - See [Extendability](#extendability) on how to add more models.
+ - Model inference through the APIs may be discontinued by the providers, which is beyond our control. This currently affects codex and bloomz. In the web interface, we marked these models as *obsolete*.
+
 
 # Run frontend
 
