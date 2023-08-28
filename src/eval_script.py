@@ -64,13 +64,13 @@ def parse_args():
         default="",
         help="specify dataset file",
     )
-    
+
     parser.add_argument(
         "--smoke",
         required=False,
         default=False,
         action="store_true",
-        #type=bool,
+        # type=bool,
         help="set to run smoke test",
     )
     args = parser.parse_args()
@@ -96,7 +96,7 @@ def get_dataset(datafile):
         label_list = []
         subtranslation_list = []
         for line in f:
-            NL_data, label,final_pred,subtranslations = line.split(";")
+            NL_data, label, final_pred, subtranslations = line.split(";")
             NL_list.append(NL_data)
             parser = LTLfParser()
             label_list.append(str(parser(label)))
@@ -109,7 +109,7 @@ def get_dataset(datafile):
         label_list = []
         subtranslation_list = []
         for line in f:
-            NL_data, label,final_pred,subtranslations = line.split(";")
+            NL_data, label, final_pred, subtranslations = line.split(";")
             NL_list.append(NL_data)
             parser = LTLfParser()
             label_list.append(str(parser(label)))
@@ -117,6 +117,7 @@ def get_dataset(datafile):
         return NL_list, label_list, subtranslation_list
     else:
         raise
+
 
 def get_next_given_translations(backend_res):
     final_translation = backend_res[0]
@@ -176,7 +177,7 @@ def display_results(NL_list, label_list, predictions, correct_list):
 
 def main():
     args = parse_args()
-    NL_list, label_list,subtranslation_list = get_dataset(args.datafile)
+    NL_list, label_list, subtranslation_list = get_dataset(args.datafile)
     predictions = []
     if not args.smoke:
         num_examples = len(NL_list)
@@ -195,10 +196,8 @@ def main():
             print(given_sub_translations)
         else:
             given_sub_translations = ""
-        
-        res = call_backend(
-            nl, **vars(args), given_translations=given_sub_translations
-        )
+
+        res = call_backend(nl, **vars(args), given_translations=given_sub_translations)
         predictions.append(get_final_translation(res))
 
     parser = LTLfParser()

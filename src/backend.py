@@ -9,6 +9,9 @@ def call(args):
     if model == "text-bison@001":
         res = models.text_bison_001(args)
         return res
+    if model == "code-bison@001":
+        res = models.code_bison_001(args)
+        return res
     if model == "text-davinci-003":
         res = models.text_davinci_003(args)
         return res

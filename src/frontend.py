@@ -31,7 +31,7 @@ def home():
             keyfile = os.path.join("..", "keys", "oai_key.txt")
         if form_data["models"] == "bloom" or form_data["models"] == "bloomz":
             keyfile = os.path.join("..", "keys", "hf_key.txt")
-        if form_data["models"] == "text-bison@001":
+        if form_data["models"] == "text-bison@001" or form_data["models"] == "code-bison@001":
             keyfile = os.path.join("..", "keys", "google_project_id.txt")
         ns = Namespace(
             keyfile=keyfile,

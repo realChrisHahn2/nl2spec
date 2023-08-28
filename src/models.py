@@ -5,7 +5,8 @@ import openai
 import requests
 import vertexai
 from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer, pipeline
-from vertexai.preview.language_models import TextGenerationModel
+from vertexai.preview.language_models import TextGenerationModel, CodeGenerationModel
+
 
 import prompting
 
@@ -157,6 +158,33 @@ def text_bison_001(args):
     def query():
         return model.predict(
             prompting.prompt(args), temperature=args.temperature, max_output_tokens=300
+        )
+
+    choices = []
+    for i in range(0, n):
+        repsonse = query()
+        output = repsonse.text.split("FINISH")[0]
+        choices.append(output)
+    return prompting.extract_subinfo(choices, args, n)
+
+
+def code_bison_001(args):
+    if args.keyfile != "":
+        keyfile = args.keyfile
+    else:
+        keyfile = os.path.join(args.keydir, "google_project_id.txt")
+    key = open(keyfile).readline().strip("\n")
+    if key == "":
+        raise Exception("No key provided.")
+    vertexai.init(project=key)
+    model = CodeGenerationModel.from_pretrained("code-bison@001")
+    n = args.num_tries
+
+    def query():
+        return model.predict(
+            prefix=prompting.prompt(args),
+            temperature=args.temperature,
+            max_output_tokens=300,
         )
 
     choices = []

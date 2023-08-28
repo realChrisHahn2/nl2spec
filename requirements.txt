@@ -4,4 +4,4 @@ transformers==4.28.1
 ltlf2dfa==1.0.2
 pandas
 tabulate
-google-cloud-aiplatform>= 1.25.0
+google-cloud-aiplatform>= 1.29.0
