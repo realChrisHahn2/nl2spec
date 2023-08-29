@@ -27,6 +27,7 @@ def home():
             or form_data["models"] == "text-davinci-003"
             or form_data["models"] == "gpt-3.5-turbo"
             or form_data["models"] == "code-davinci-edit-001"
+            or form_data["models"] == "gpt-4"
         ):
             keyfile = os.path.join("..", "keys", "oai_key.txt")
         if form_data["models"] == "bloom" or form_data["models"] == "bloomz":

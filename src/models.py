@@ -42,6 +42,37 @@ def gpt_35_turbo(args):
     return prompting.extract_subinfo(choices, args, n)
 
 
+def gpt_4(args):
+    if args.keyfile != "":
+        keyfile = args.keyfile
+    else:
+        keyfile = os.path.join(args.keydir, "oai_key.txt")
+    key = open(keyfile).readline().strip("\n")
+    if key == "":
+        raise Exception("No key provided.")
+    openai.api_key = key
+    if args.num_tries == "":
+        n = 3
+    else:
+        n = int(args.num_tries)
+        if n > 5:
+            n = 5
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompting.prompt(args)}],
+        n=n,
+        temperature=args.temperature,
+        stop="FINISH",
+    )
+    choices = []
+    for i in range(0, n):
+        output = response["choices"][i]["message"]["content"]
+        print("OUTPUT")
+        print(output)
+        choices.append(output)
+    return prompting.extract_subinfo(choices, args, n)
+
+
 def code_davinci_002(args):
     if args.keyfile != "":
         keyfile = args.keyfile

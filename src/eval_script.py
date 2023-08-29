@@ -1,8 +1,11 @@
-import backend
-import numpy as np
 import argparse
-from tabulate import tabulate
+import time
+
+import numpy as np
 from ltlf2dfa.parser.ltlf import LTLfParser
+from tabulate import tabulate
+
+import backend
 
 # import spot
 
@@ -73,6 +76,14 @@ def parse_args():
         # type=bool,
         help="set to run smoke test",
     )
+    parser.add_argument(
+        "--wait",
+        required=False,
+        default=0,
+        type=int,
+        help="Wait a specified amount of time (s) after each sample to stay below rate limits",
+    )
+
     args = parser.parse_args()
     return args
 
@@ -184,13 +195,15 @@ def main():
     else:
         num_examples = 2
     for i in range(num_examples):
+        if args.wait != 0:
+            time.sleep(args.wait)
         nl = NL_list[i]
         if subtranslation_list is not None:
             given_sub_translations = subtranslation_list[i]
         elif args.teacher_model != "":
             teacher_dict = vars(args).copy()
             teacher_dict["model"] = args.teacher_model
-            res = call_backend(nl,**teacher_dict)
+            res = call_backend(nl, **teacher_dict)
             given_sub_translations = str(get_next_given_translations(res))
             print("TEACHER SUB TRANSLATIONS")
             print(given_sub_translations)
